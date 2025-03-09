@@ -61,8 +61,6 @@ class ParticleModel : Shader
         }
         return particles;
     }
-
-
     public Particles GenerateVertices(int dimensions)
     {
 
@@ -109,5 +107,10 @@ class ParticleModel : Shader
             }
         }
         return colors;
+    }
+    public void ShareBuffer(string name, int bufferIndex, int location)
+    {
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, location, bufferIndex);
+        buffers.Add(name, bufferIndex);
     }
 }

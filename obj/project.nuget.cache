@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FzSbLwOZ4Ew=",
+  "dgSpecHash": "N5jp2r6vWAI=",
   "success": true,
-  "projectFilePath": "c:\\Users\\hoefn\\Code Projects\\OpenTK test\\DustCollector\\DustCollector.csproj",
+  "projectFilePath": "C:\\Users\\hoefn\\Code Projects\\OpenTK test\\DustCollector\\DustCollector.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\hoefn\\.nuget\\packages\\opentk\\4.9.3\\opentk.4.9.3.nupkg.sha512",
     "C:\\Users\\hoefn\\.nuget\\packages\\opentk.audio.openal\\4.9.3\\opentk.audio.openal.4.9.3.nupkg.sha512",

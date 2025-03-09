@@ -49,7 +49,7 @@ public class Game : GameWindow
         float[] colors = _model.GenerateColors(dimensions);
 
         _shader.CreatePositionColorArray(positions, colors);
-
+        _model.ShareBuffer("positions", _shader.buffers["positions"], 0);
         // _shader.CreateGeneralArray("particles", particles, 3, 0, BufferUsageHint.StreamDraw);
         // _shader.CreateGeneralArray("colors", colors, 3, 1, BufferUsageHint.StreamDraw);
         // _shader.CreateGeneralArray("colors", colors, 3);
@@ -77,9 +77,9 @@ public class Game : GameWindow
         //             _model.vertices,
         //             BufferUsageHint.StaticDraw
         // );
-        // _model.Use();
-        // GL.DispatchCompute(_model.particleCount, 1, 1);
-        // GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
+        _model.Use();
+        GL.DispatchCompute(_model.particleCount, 1, 1);
+        GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
 
 
         _shader.Use();

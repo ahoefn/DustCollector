@@ -29,9 +29,9 @@ void WriteColor(vec3 color,uint ind)
 void main()
 {
     uint id=gl_GlobalInvocationID.x;
-    uint index=6*id;
+    uint index=3*id;
     vec3 position=GetPosition(index);
-    position.x+=0.01f;
+    position.x+=0.001f;
     WritePosition(position,index);
 }
 

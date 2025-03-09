@@ -1,0 +1,37 @@
+#version 450 core
+
+layout(local_size_x=1, local_size_y=1, local_size_z=1) in;
+layout(std430,binding=0)  buffer _vertexBufferObject
+{
+    float nums[];
+} vertexBuffer;
+
+vec3 GetPosition(uint ind)
+{
+    return vec3(vertexBuffer.nums[ind],vertexBuffer.nums[ind+1],vertexBuffer.nums[ind+2]);
+}
+vec3 GetColor(uint ind)
+{
+    return vec3(vertexBuffer.nums[ind+3],vertexBuffer.nums[ind+4],vertexBuffer.nums[ind+5]);
+}
+void WritePosition(vec3 pos,uint ind)
+{
+    vertexBuffer.nums[ind]=pos.x;
+    vertexBuffer.nums[ind+1]=pos.y;
+    vertexBuffer.nums[ind+2]=pos.z;
+}
+void WriteColor(vec3 color,uint ind)
+{
+    vertexBuffer.nums[ind+3]=color.x;
+    vertexBuffer.nums[ind+4]=color.y;
+    vertexBuffer.nums[ind+5]=color.z;
+}
+void main()
+{
+    uint id=gl_GlobalInvocationID.x;
+    uint index=6*id;
+    vec3 position=GetPosition(index);
+    position.x+=0.01f;
+    WritePosition(position,index);
+}
+

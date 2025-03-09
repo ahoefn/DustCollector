@@ -29,3 +29,4 @@ C:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\refint\D
 C:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\DustCollector.pdb
 C:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\DustCollector.genruntimeconfig.cache
 C:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\ref\DustCollector.dll
+C:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\DustCollector.sourcelink.json

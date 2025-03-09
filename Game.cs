@@ -45,10 +45,13 @@ public class Game : GameWindow
 
         int dimensions = 10;
         _model.particleCount = dimensions * dimensions * dimensions;
-        Particles particles = _model.GenerateVertices(dimensions);
+        float[] positions = _model.GeneratePositions(dimensions);
         float[] colors = _model.GenerateColors(dimensions);
 
-        _shader.CreateParticleArray("particles", particles.data);
+        _shader.CreatePositionColorArray(positions, colors);
+
+        // _shader.CreateGeneralArray("particles", particles, 3, 0, BufferUsageHint.StreamDraw);
+        // _shader.CreateGeneralArray("colors", colors, 3, 1, BufferUsageHint.StreamDraw);
         // _shader.CreateGeneralArray("colors", colors, 3);
     }
     protected override void OnRenderFrame(FrameEventArgs args)
@@ -87,7 +90,7 @@ public class Game : GameWindow
         _shader.SetMatrix4("view", _camera.view);
         _shader.SetMatrix4("projection", _camera.projection);
 
-        GL.BindVertexArray(_shader.vertexArrays["particlesArray"]);
+        GL.BindVertexArray(_shader.vertexArrays["positionsColors"]);
         GL.DrawArrays(PrimitiveType.Points, 0, _model.particleCount);
 
         SwapBuffers();

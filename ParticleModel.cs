@@ -37,6 +37,31 @@ class ParticleModel : Shader
     }
 
     public int particleCount = 0;
+    public float[] GeneratePositions(int dimensions)
+    {//Generates particles spaced out in a cube
+
+        if (particleCount != dimensions * dimensions * dimensions)
+        {
+            Console.WriteLine("dimensions does not match particleCount\n");
+        }
+
+        var particles = new float[3 * particleCount];
+        for (int i = 0; i < dimensions; i++)
+        {
+            for (int j = 0; j < dimensions; j++)
+            {
+                for (int k = 0; k < dimensions; k++)
+                {
+                    int index = 3 * (i + dimensions * j + dimensions * dimensions * k);
+                    particles[index] = i - dimensions / 2;
+                    particles[index + 1] = j - dimensions / 2;
+                    particles[index + 2] = k - dimensions / 2;
+                }
+            }
+        }
+        return particles;
+    }
+
 
     public Particles GenerateVertices(int dimensions)
     {
@@ -76,7 +101,7 @@ class ParticleModel : Shader
             {
                 for (int k = 0; k < dimensions; k++)
                 {
-                    currentIndex = i + dimensions * j + dimensions * dimensions * k;
+                    currentIndex = 3 * (i + dimensions * j + dimensions * dimensions * k);
                     colors[currentIndex] = (float)i / dimensions;
                     colors[currentIndex + 1] = (float)j / dimensions;
                     colors[currentIndex + 2] = (float)(dimensions - i - j) / dimensions;

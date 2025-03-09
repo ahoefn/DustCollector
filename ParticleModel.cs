@@ -6,7 +6,7 @@ namespace DustCollector;
 
 class ParticleModel : Shader
 {
-    public ParticleModel(string computePath) : base()
+    public ParticleModel(string computePath) : base(BufferTarget.ShaderStorageBuffer)
     {
         string computeShaderSource = File.ReadAllText(computePath);
         int computeShader = GL.CreateShader(ShaderType.ComputeShader);
@@ -84,7 +84,27 @@ class ParticleModel : Shader
         }
         return particles;
     }
-
+    public float[] GenerateVelocities(int dimensions)
+    {
+        if (particleCount != dimensions * dimensions * dimensions)
+        {
+            Console.WriteLine("dimensions does not match particleCount\n");
+        }
+        var velocities = new float[3 * particleCount];
+        int currentIndex;
+        for (int i = 0; i < dimensions; i++)
+        {
+            for (int j = 0; j < dimensions; j++)
+            {
+                for (int k = 0; k < dimensions; k++)
+                {
+                    currentIndex = 3 * (i + dimensions * j + dimensions * dimensions * k);
+                    velocities[currentIndex] = 0.001f;
+                }
+            }
+        }
+        return velocities;
+    }
     public float[] GenerateColors(int dimensions)
     {
         if (particleCount != dimensions * dimensions * dimensions)
@@ -107,10 +127,5 @@ class ParticleModel : Shader
             }
         }
         return colors;
-    }
-    public void ShareBuffer(string name, int bufferIndex, int location)
-    {
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, location, bufferIndex);
-        buffers.Add(name, bufferIndex);
     }
 }

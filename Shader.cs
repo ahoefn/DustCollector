@@ -7,16 +7,18 @@ namespace DustCollector;
 
 public class Shader : IDisposable
 {
-    public Shader()
+    public Shader(BufferTarget bufferTarget_in)
     {
         _uniformlocations = new Dictionary<string, int>();
         buffers = new Dictionary<string, int>();
+        _bufferTarget = bufferTarget_in;
     }
     //Data:
     public int handle { get; protected init; }
     protected bool disposedValue = false;
     protected Dictionary<string, int> _uniformlocations;
     public Dictionary<string, int> buffers;
+    private protected BufferTarget _bufferTarget;
 
     //Methods:
     public void UpdateUniforms()
@@ -32,6 +34,38 @@ public class Shader : IDisposable
             _uniformlocations.Add(key, location);
         }
     }
+    public void CreateVertexBuffer(string name, float[] data, BufferUsageHint hint)
+    {
+        int vertexBufferObject = GL.GenBuffer();
+        GL.BindBuffer(_bufferTarget, vertexBufferObject);
+        GL.BufferData(
+                    _bufferTarget,
+                    data.Length * sizeof(float),
+                    data,
+                    hint
+        );
+        buffers.Add(name, vertexBufferObject);
+    }
+    public void CreateStorageBuffer(string name, float[] data, int location, BufferUsageHint hint)
+    {
+        int vertexBufferObject = GL.GenBuffer();
+        GL.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexBufferObject);
+        GL.BufferData(
+                    _bufferTarget,
+                    data.Length * sizeof(float),
+                    data,
+                    hint
+        );
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, location, vertexBufferObject);
+        buffers.Add(name, vertexBufferObject);
+
+    }
+    public void ShareBuffer(string name, int bufferIndex, int location)
+    {//TODO: implement automatic Buffertype here as well
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, location, bufferIndex);
+        buffers.Add(name, bufferIndex);
+    }
+
 
     public void Use()
     {
@@ -84,7 +118,7 @@ public class Shader : IDisposable
 
 public class GeometryShader : Shader
 {
-    public GeometryShader(string vertexPath, string fragmentPath) : base()
+    public GeometryShader(string vertexPath, string fragmentPath) : base(BufferTarget.ArrayBuffer)
     {
         int vertexShader, fragmentShader;
 
@@ -164,63 +198,6 @@ public class GeometryShader : Shader
             0
         );
         GL.EnableVertexAttribArray(location);
-    }
-
-    // public void CreateGeneralArray(string name, float[] data, int stride, int location, BufferUsageHint hint)
-    // {
-    //     CreateVertexBuffer(name + "Buffer", data, hint);
-    //     CreateVertexArray(name + "Array");
-
-    //     //Note: the following implicitly depends on which VertexBufferObject is currently bound
-    //     GL.BindVertexArray(vertexArrays[name + "Array"]);
-    //     GL.VertexAttribPointer(
-    //         location,
-    //         stride,
-    //         VertexAttribPointerType.Float,
-    //         false,
-    //         stride * sizeof(float),
-    //         0
-    //     );
-    //     GL.EnableVertexAttribArray(location);
-    // }
-
-    // public void CreateParticleArray(string name, float[] data)
-    // {//Deprecated?
-    //     CreateVertexBuffer(name + "Buffer", data, BufferUsageHint.StreamDraw);
-    //     CreateVertexArray(name + "Array");
-
-    //     //Note: the following implicitly depends on which VertexBufferObject is currently bound
-    //     GL.BindVertexArray(vertexArrays[name + "Array"]);
-    //     GL.VertexAttribPointer(
-    //         0, //Location
-    //         3, //Size, vec3 so three values
-    //         VertexAttribPointerType.Float, //Size of each element
-    //         false, //Is data normalized?
-    //         6 * sizeof(float), //Stride = size diff between data entries
-    //         0 //Offset
-    //     );
-    //     GL.EnableVertexAttribArray(0);
-    //     GL.VertexAttribPointer(
-    //         1,
-    //         3,
-    //         VertexAttribPointerType.Float,
-    //         false,
-    //         6 * sizeof(float),
-    //         3 * sizeof(float)
-    //     );
-    //     GL.EnableVertexAttribArray(1);
-    // }
-    public void CreateVertexBuffer(string name, float[] data, BufferUsageHint hint)
-    {
-        int vertexBufferObject = GL.GenBuffer();
-        GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferObject);
-        GL.BufferData(
-                    BufferTarget.ArrayBuffer,
-                    data.Length * sizeof(float),
-                    data,
-                    hint
-        );
-        buffers.Add(name, vertexBufferObject);
     }
     public void CreateVertexArray(string name)
     {

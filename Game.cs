@@ -47,9 +47,11 @@ public class Game : GameWindow
         _model.particleCount = dimensions * dimensions * dimensions;
         float[] positions = _model.GeneratePositions(dimensions);
         float[] colors = _model.GenerateColors(dimensions);
+        float[] velocities = _model.GenerateVelocities(dimensions);
 
         _shader.CreatePositionColorArray(positions, colors);
         _model.ShareBuffer("positions", _shader.buffers["positions"], 0);
+        _model.CreateStorageBuffer("velocities", velocities, 1, BufferUsageHint.StreamDraw);
         // _shader.CreateGeneralArray("particles", particles, 3, 0, BufferUsageHint.StreamDraw);
         // _shader.CreateGeneralArray("colors", colors, 3, 1, BufferUsageHint.StreamDraw);
         // _shader.CreateGeneralArray("colors", colors, 3);

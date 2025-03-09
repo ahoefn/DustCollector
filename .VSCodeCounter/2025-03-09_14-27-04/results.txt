@@ -1,0 +1,60 @@
+Date : 2025-03-09 14:27:04
+Directory : c:\Users\hoefn\Code Projects\OpenTK test\DustCollector
+Total : 26 files,  1313 codes, 87 comments, 102 blanks, all 1502 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JSON       |          4 |        645 |          0 |          0 |        645 |
+| C#         |         12 |        553 |         64 |         86 |        703 |
+| XML        |          5 |         46 |          0 |          2 |         48 |
+| GLSL       |          3 |         39 |         23 |         12 |         74 |
+| Properties |          2 |         30 |          0 |          2 |         32 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                            | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                               |         26 |      1,313 |         87 |        102 |      1,502 |
+| . (Files)                                                                                                                       |          8 |        530 |         43 |         75 |        648 |
+| Shaders                                                                                                                         |          3 |         39 |         23 |         12 |         74 |
+| obj                                                                                                                             |         15 |        744 |         21 |         15 |        780 |
+| obj (Files)                                                                                                                     |          7 |        678 |          0 |          0 |        678 |
+| obj\Debug                                                                                                                       |          8 |         66 |         21 |         15 |        102 |
+| obj\Debug\net9.0                                                                                                                |          8 |         66 |         21 |         15 |        102 |
++---------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                                        | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\Camera.cs                                                                | C#         |         54 |          0 |         10 |         64 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\DataTypes.cs                                                             | C#         |         56 |          0 |          1 |         57 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\DustCollector.csproj                                                     | XML        |         12 |          0 |          2 |         14 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\Game.cs                                                                  | C#         |         96 |         34 |         25 |        155 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\Globals.cs                                                               | C#         |          7 |          0 |          1 |          8 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\ParticleModel.cs                                                         | C#         |        119 |          0 |         12 |        131 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\Program.cs                                                               | C#         |         11 |          0 |          1 |         12 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\Shader.cs                                                                | C#         |        175 |          9 |         23 |        207 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\Shaders\Model.comp                                                       | GLSL       |         16 |         23 |          3 |         42 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\Shaders\Shader.frag                                                      | GLSL       |          8 |          0 |          2 |         10 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\Shaders\Shader.vert                                                      | GLSL       |         15 |          0 |          7 |         22 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\.NETCoreApp,Version=v9.0.AssemblyAttributes.cs          | C#         |          3 |          1 |          1 |          5 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\DustCollector.AssemblyInfo.cs                           | C#         |          9 |          9 |          5 |         23 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\DustCollector.GeneratedMSBuildEditorConfig.editorconfig | Properties |         15 |          0 |          1 |         16 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\DustCollector.GlobalUsings.g.cs                         | C#         |          7 |          1 |          1 |          9 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\DustCollector.sourcelink.json                           | JSON       |          1 |          0 |          0 |          1 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\OpenTKtest.AssemblyInfo.cs                              | C#         |          9 |          9 |          5 |         23 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\OpenTKtest.GeneratedMSBuildEditorConfig.editorconfig    | Properties |         15 |          0 |          1 |         16 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\OpenTKtest.GlobalUsings.g.cs                            | C#         |          7 |          1 |          1 |          9 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\DustCollector.csproj.nuget.dgspec.json                               | JSON       |         73 |          0 |          0 |         73 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\DustCollector.csproj.nuget.g.props                                   | XML        |         15 |          0 |          0 |         15 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\DustCollector.csproj.nuget.g.targets                                 | XML        |          2 |          0 |          0 |          2 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\OpenTKtest.csproj.nuget.dgspec.json                                  | JSON       |         73 |          0 |          0 |         73 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\OpenTKtest.csproj.nuget.g.props                                      | XML        |         15 |          0 |          0 |         15 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\OpenTKtest.csproj.nuget.g.targets                                    | XML        |          2 |          0 |          0 |          2 |
+| c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\project.assets.json                                                  | JSON       |        498 |          0 |          0 |        498 |
+| Total                                                                                                                           |            |      1,313 |         87 |        102 |      1,502 |
++---------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

@@ -99,7 +99,7 @@ class ParticleModel : Shader
                 for (int k = 0; k < dimensions; k++)
                 {
                     currentIndex = 3 * (i + dimensions * j + dimensions * dimensions * k);
-                    velocities[currentIndex] = 0.001f;
+                    velocities[currentIndex] = 1f;
                 }
             }
         }
@@ -127,5 +127,18 @@ class ParticleModel : Shader
             }
         }
         return colors;
+    }
+    public void SwapPositionVelocityBuffers()
+    {
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, buffers["positionsFuture"]);
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, buffers["positionsCurrent"]);
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 2, buffers["velocitiesFuture"]);
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 3, buffers["velocitiesCurrent"]);
+
+        (buffers["positionsFuture"], buffers["positionsCurrent"])
+        = (buffers["positionsCurrent"], buffers["positionsFuture"]);
+
+        (buffers["velocitiesFuture"], buffers["velocitiesCurrent"])
+       = (buffers["velocitiesCurrent"], buffers["velocitiesFuture"]);
     }
 }

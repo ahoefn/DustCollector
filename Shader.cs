@@ -176,15 +176,28 @@ public class GeometryShader : Shader
     public Dictionary<string, int> vertexArrays;
 
     //Methods:
-    public void CreatePositionColorArray(float[] positions, float[] colors)
+    public void CreatePositionColorArrays(float[] positions, float[] colors)
     {
-        CreateVertexBuffer("positions", positions, BufferUsageHint.StreamDraw);
+        CreateVertexBuffer("positionsCurrent", positions, BufferUsageHint.StreamDraw);
+        CreateVertexBuffer("positionsFuture", positions, BufferUsageHint.StreamDraw);
         CreateVertexBuffer("colors", colors, BufferUsageHint.StreamDraw);
-        CreateVertexArray("positionsColors");
 
-        BindBufferToArray("positions", "positionsColors", 0, 3);
-        BindBufferToArray("colors", "positionsColors", 1, 3);
+        CreateVertexArray("positionsColorsCurrent");
+        BindBufferToArray("positionsCurrent", "positionsColorsCurrent", 0, 3);
+        BindBufferToArray("colors", "positionsColorsCurrent", 1, 3);
+
+        CreateVertexArray("positionsColorsFuture");
+        BindBufferToArray("positionsFuture", "positionsColorsFuture", 0, 3);
+        BindBufferToArray("colors", "positionsColorsFuture", 1, 3);
     }
+    public void SwapPositionBuffers()
+    {
+        (buffers["positionsFuture"], buffers["positionsCurrent"])
+        = (buffers["positionsCurrent"], buffers["positionsFuture"]);
+        (vertexArrays["positionsColorsFuture"], vertexArrays["positionsColorsCurrent"])
+        = (vertexArrays["positionsColorsCurrent"], vertexArrays["positionsColorsFuture"]);
+    }
+
     public void BindBufferToArray(string buffer, string array, int location, int stride)
     {
         GL.BindBuffer(BufferTarget.ArrayBuffer, buffers[buffer]);

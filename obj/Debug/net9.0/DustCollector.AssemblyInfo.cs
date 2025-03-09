@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DustCollector")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+60684ae4ae51b29d4b426115feddd0164e2f6e2b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8a595476be21cc6f2251c868d83e87091663e904")]
 [assembly: System.Reflection.AssemblyProductAttribute("DustCollector")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DustCollector")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

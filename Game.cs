@@ -49,41 +49,22 @@ public class Game : GameWindow
         float[] colors = _model.GenerateColors(dimensions);
         float[] velocities = _model.GenerateVelocities(dimensions);
 
-        _shader.CreatePositionColorArray(positions, colors);
-        _model.ShareBuffer("positions", _shader.buffers["positions"], 0);
-        _model.CreateStorageBuffer("velocities", velocities, 1, BufferUsageHint.StreamDraw);
-        // _shader.CreateGeneralArray("particles", particles, 3, 0, BufferUsageHint.StreamDraw);
-        // _shader.CreateGeneralArray("colors", colors, 3, 1, BufferUsageHint.StreamDraw);
-        // _shader.CreateGeneralArray("colors", colors, 3);
+        _shader.CreatePositionColorArrays(positions, colors);
+        _model.ShareBuffer("positionsCurrent", _shader.buffers["positionsCurrent"], 0);
+        _model.ShareBuffer("positionsFuture", _shader.buffers["positionsFuture"], 1);
+        _model.CreateStorageBuffer("velocitiesCurrent", velocities, 2, BufferUsageHint.StreamDraw);
+        _model.CreateStorageBuffer("velocitiesFuture", velocities, 3, BufferUsageHint.StreamDraw);
     }
     protected override void OnRenderFrame(FrameEventArgs args)
     {
         base.OnRenderFrame(args);
 
-
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+        float deltaTime = (float)args.Time;
 
-        // //Some nice fluctuating colors:
-        // double timeValue = _timer.Elapsed.TotalSeconds;
-        // float firstValue = (float)Math.Sin(timeValue) / 2.0f + 0.5f;
-        // float secondValue = (float)Math.Sin(timeValue + 2 * Math.PI / 3) / 2.0f + 0.5f;
-        // float thirdValue = (float)Math.Sin(timeValue + 4 * Math.PI / 3) / 2.0f + 0.5f;
-        // Array.Copy(new float[3] { firstValue, secondValue, thirdValue }, 0, _model.vertices, 3, 3);
-        // Array.Copy(new float[3] { secondValue, thirdValue, firstValue }, 0, _model.vertices, 9, 3);
-        // Array.Copy(new float[3] { thirdValue, firstValue, secondValue }, 0, _model.vertices, 15, 3);
-
-        // GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
-        // GL.BufferData(
-        //             BufferTarget.ArrayBuffer,
-        //             _model.vertices.Length * sizeof(float),
-        //             _model.vertices,
-        //             BufferUsageHint.StaticDraw
-        // );
         _model.Use();
+        _model.SetFloat("deltaTime", deltaTime);
         GL.DispatchCompute(_model.particleCount, 1, 1);
-        GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
-
-
         _shader.Use();
 
         // _camera.model = Matrix4.CreateRotationX((float)timeValue / 5);
@@ -92,10 +73,13 @@ public class Game : GameWindow
         _shader.SetMatrix4("view", _camera.view);
         _shader.SetMatrix4("projection", _camera.projection);
 
-        GL.BindVertexArray(_shader.vertexArrays["positionsColors"]);
+        GL.BindVertexArray(_shader.vertexArrays["positionsColorsCurrent"]);
         GL.DrawArrays(PrimitiveType.Points, 0, _model.particleCount);
 
+        GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
         SwapBuffers();
+        _shader.SwapPositionBuffers();
+        _model.SwapPositionVelocityBuffers();
 
     }
     protected override void OnUpdateFrame(FrameEventArgs args)

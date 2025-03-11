@@ -8,6 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.9.3" />
-    <None Update="C:\Users\hoefn\Code Projects\OpenTK test\OpenTKtest\Shaders\**" CopyToOutputDirectory="PreserveNewest"/>
+    <None Update="C:\Users\hoefn\Code Projects\OpenTK test\DustCollector\Shaders\**" CopyToOutputDirectory="PreserveNewest"/>
   </ItemGroup>
 </Project>

@@ -1,0 +1,26 @@
+#version 450 core
+
+layout(local_size_x=1, local_size_y=1, local_size_z=1) in;
+layout(std430,binding=0)  buffer positionsBufferCurrent
+{
+    float pos[];
+} positionsCurrent;
+layout(std430,binding=1)  buffer positionsBufferFuture
+{
+    float pos[];
+} positionsFuture;
+layout(std430,binding=2)  buffer velocityBuffer
+{
+    float v[];
+} velocities;
+uniform float deltaTime;
+uniform int offSetX;
+
+void main()
+{
+    uint index=3*(gl_GlobalInvocationID.x+offSetX);
+    positionsFuture.pos[index] = positionsCurrent.pos[index] + deltaTime*velocities.v[index];
+    positionsFuture.pos[index+1] = positionsCurrent.pos[index+1] + deltaTime*velocities.v[index+1];
+    positionsFuture.pos[index+2] = positionsCurrent.pos[index+2] + deltaTime*velocities.v[index+2];
+}
+

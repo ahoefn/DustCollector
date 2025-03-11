@@ -1,42 +1,22 @@
+using System.Diagnostics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 namespace DustCollector;
 
 
-
-class ParticleModel : Shader
+class ParticleModel
 {
-    public ParticleModel(string computePath) : base(BufferTarget.ShaderStorageBuffer)
+    public ParticleModel(string positionLocation, string velocityLocation)
     {
-        string computeShaderSource = File.ReadAllText(computePath);
-        int computeShader = GL.CreateShader(ShaderType.ComputeShader);
-        GL.ShaderSource(computeShader, computeShaderSource);
-
-        GL.CompileShader(computeShader);
-        GL.GetShader(computeShader, ShaderParameter.CompileStatus, out int succes);
-        if (succes == 0)
-        {
-            string infoLog = GL.GetShaderInfoLog(computeShader);
-            Console.WriteLine(infoLog + "No compute shader");
-        }
-        handle = GL.CreateProgram();
-        GL.AttachShader(handle, computeShader);
-        GL.LinkProgram(handle);
-
-        GL.GetProgram(handle, GetProgramParameterName.LinkStatus, out succes);
-        if (succes == 0)
-        {
-            string infoLog = GL.GetProgramInfoLog(handle);
-            Console.WriteLine(infoLog + "No program");
-        }
-
-        GL.DetachShader(handle, computeShader);
-        GL.DeleteShader(computeShader);
-
-        UpdateUniforms();
+        positionUpdater = new ComputeShader(positionLocation);
+        velocityUpdater = new ComputeShader(velocityLocation);
     }
-
+    //Properties:
     public int particleCount = 0;
+    public ComputeShader positionUpdater;
+    public ComputeShader velocityUpdater;
+
+    //Methods:
     public float[] GeneratePositions(int dimensions)
     {//Generates particles spaced out in a cube
 
@@ -55,7 +35,7 @@ class ParticleModel : Shader
                     int index = 3 * (i + dimensions * j + dimensions * dimensions * k);
                     particles[index] = i - dimensions / 2;
                     particles[index + 1] = j - dimensions / 2;
-                    particles[index + 2] = k - dimensions / 2;
+                    particles[index + 2] = -k - dimensions / 4;
                 }
             }
         }
@@ -99,7 +79,7 @@ class ParticleModel : Shader
                 for (int k = 0; k < dimensions; k++)
                 {
                     currentIndex = 3 * (i + dimensions * j + dimensions * dimensions * k);
-                    velocities[currentIndex] = 1f;
+                    velocities[currentIndex] = 1.1f;
                 }
             }
         }
@@ -128,17 +108,18 @@ class ParticleModel : Shader
         }
         return colors;
     }
-    public void SwapPositionVelocityBuffers()
+    public void InitializeBuffers(int positionsCurrent, int positionsFuture, float[] velocities)
     {
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, buffers["positionsFuture"]);
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, buffers["positionsCurrent"]);
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 2, buffers["velocitiesFuture"]);
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 3, buffers["velocitiesCurrent"]);
+        positionUpdater.ShareBuffer("positionsCurrent", positionsCurrent, 0);
+        positionUpdater.ShareBuffer("positionsFuture", positionsFuture, 1);
+        positionUpdater.CreateStorageBuffer("velocities", velocities, 2, BufferUsageHint.StreamDraw);
 
-        (buffers["positionsFuture"], buffers["positionsCurrent"])
-        = (buffers["positionsCurrent"], buffers["positionsFuture"]);
-
-        (buffers["velocitiesFuture"], buffers["velocitiesCurrent"])
-       = (buffers["velocitiesCurrent"], buffers["velocitiesFuture"]);
+        velocityUpdater.ShareBuffer("positionsCurrent", positionsCurrent, 0);
+        velocityUpdater.ShareBuffer("velocities", positionUpdater.buffers["velocities"], 1);
+    }
+    public void SwapPositionBuffers()
+    {
+        positionUpdater.SwapPositionBuffers();
+        velocityUpdater.UpdateBuffer("positionsCurrent", positionUpdater.buffers["positionsCurrent"], 0);
     }
 }

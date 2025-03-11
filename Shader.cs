@@ -23,6 +23,7 @@ public class Shader : IDisposable
     //Methods:
     public void UpdateUniforms()
     {
+        Use();
         GL.GetProgram(handle, GetProgramParameterName.ActiveUniforms, out int uniformCount);
         string key;
         int location;
@@ -36,6 +37,7 @@ public class Shader : IDisposable
     }
     public void CreateVertexBuffer(string name, float[] data, BufferUsageHint hint)
     {
+        Use();
         int vertexBufferObject = GL.GenBuffer();
         GL.BindBuffer(_bufferTarget, vertexBufferObject);
         GL.BufferData(
@@ -48,6 +50,7 @@ public class Shader : IDisposable
     }
     public void CreateStorageBuffer(string name, float[] data, int location, BufferUsageHint hint)
     {
+        Use();
         int vertexBufferObject = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexBufferObject);
         GL.BufferData(
@@ -62,11 +65,16 @@ public class Shader : IDisposable
     }
     public void ShareBuffer(string name, int bufferIndex, int location)
     {//TODO: implement automatic Buffertype here as well
+        Use();
         GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, location, bufferIndex);
         buffers.Add(name, bufferIndex);
     }
-
-
+    public void UpdateBuffer(string name, int newBufferIndex, int location)
+    {//TODO: implement automatic Buffertype here as well
+        Use();
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, location, newBufferIndex);
+        buffers[name] = newBufferIndex;
+    }
     public void Use()
     {
         GL.UseProgram(handle);
@@ -84,6 +92,12 @@ public class Shader : IDisposable
         if (!_uniformlocations.ContainsKey(name)) { Console.WriteLine("Error: no uniform with name " + name); }
         GL.UseProgram(handle);
         GL.Uniform1(_uniformlocations[name], f);
+    }
+    public void SetInt(string name, int i)
+    {
+        if (!_uniformlocations.ContainsKey(name)) { Console.WriteLine("Error: no uniform with name " + name); }
+        GL.UseProgram(handle);
+        GL.Uniform1(_uniformlocations[name], i);
     }
     public void SetVec3(string name, Vector3 v)
     {
@@ -200,6 +214,7 @@ public class GeometryShader : Shader
 
     public void BindBufferToArray(string buffer, string array, int location, int stride)
     {
+        Use();
         GL.BindBuffer(BufferTarget.ArrayBuffer, buffers[buffer]);
         GL.BindVertexArray(vertexArrays[array]);
         GL.VertexAttribPointer(

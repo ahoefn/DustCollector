@@ -1,0 +1,33 @@
+#version 450 core
+
+layout(local_size_x=1, local_size_y=1, local_size_z=1) in;
+layout(std430,binding=0)  buffer positionsBufferCurrent
+{
+    float pos[];
+} positionsCurrent;
+layout(std430,binding=1)  buffer velocityBuffer
+{
+    float v[];
+} velocities;
+
+uniform float deltaTime;
+uniform int offSetX;
+
+float OneOverParticleDistanceSqrd(uint i1, uint i2)
+{
+    float dot=positionsCurrent.pos[i1]*positionsCurrent.pos[i2]
+                +positionsCurrent.pos[i1+1]*positionsCurrent.pos[i2+1]
+                +positionsCurrent.pos[i1+2]*positionsCurrent.pos[i2+2];
+    return 1/dot;
+}
+
+void main()
+{
+    uvec3 id=gl_WorkGroupID;
+    uint index_in=3*(id.x+offSetX);
+    uint index_out=3*(id.y+offSetX);
+    // velocities.v[index_out]+=0.1f* deltaTime * OneOverParticleDistanceSqrd(index_in,index_out);
+    velocities.v[index_out+1]=-positionsCurrent.pos[index_out+1];
+    // velocities.v[index_in]=-0.1f;
+    velocities.v[index_in+2]=0.1f+deltaTime;
+}

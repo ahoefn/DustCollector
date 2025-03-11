@@ -30,3 +30,7 @@ C:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\DustColl
 C:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\DustCollector.genruntimeconfig.cache
 C:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\ref\DustCollector.dll
 C:\Users\hoefn\Code Projects\OpenTK test\DustCollector\obj\Debug\net9.0\DustCollector.sourcelink.json
+c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\bin\Debug\net9.0\Shaders\Shader.frag
+c:\Users\hoefn\Code Projects\OpenTK test\DustCollector\bin\Debug\net9.0\Shaders\Shader.vert
+C:\Users\hoefn\Code Projects\OpenTK test\DustCollector\bin\Debug\net9.0\Shaders\PositionUpdater.comp
+C:\Users\hoefn\Code Projects\OpenTK test\DustCollector\bin\Debug\net9.0\Shaders\VelocityUpdater.comp

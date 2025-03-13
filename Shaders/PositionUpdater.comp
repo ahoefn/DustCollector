@@ -16,9 +16,18 @@ layout(std430,binding=2)  buffer velocityBuffer
 uniform float deltaTime;
 uniform int offSetX;
 
+const int MAXVELOCITY =3;
+
 void main()
 {
     uint index=3*(gl_GlobalInvocationID.x+offSetX);
+    velocities.v[index]=min(velocities.v[index],MAXVELOCITY);
+    velocities.v[index+1]=min(velocities.v[index+1],MAXVELOCITY);
+    velocities.v[index+2]=min(velocities.v[index+2],MAXVELOCITY);
+    velocities.v[index]=max(velocities.v[index],-MAXVELOCITY);
+    velocities.v[index+1]=max(velocities.v[index+1],-MAXVELOCITY);
+    velocities.v[index+2]=max(velocities.v[index+2],-MAXVELOCITY);
+
     positionsFuture.pos[index] = positionsCurrent.pos[index] + deltaTime*velocities.v[index];
     positionsFuture.pos[index+1] = positionsCurrent.pos[index+1] + deltaTime*velocities.v[index+1];
     positionsFuture.pos[index+2] = positionsCurrent.pos[index+2] + deltaTime*velocities.v[index+2];

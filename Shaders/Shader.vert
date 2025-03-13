@@ -9,13 +9,13 @@ uniform mat4 projection;
 uniform float POINTSIZE;
 
 out vec3 vertexColor;
-// out float distmult; 
+out float distmult; 
 
 
 void main()
 {
     vec4 MVvec=vec4(aPosition, 1.0) * model * view ;
-    // distmult=1/sqrt(length(MVvec));
+    distmult=1/sqrt(length(MVvec));
     gl_Position = MVvec* projection;
     vertexColor=  colorIn;
     float cameraDistance = length(gl_Position); 

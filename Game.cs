@@ -49,7 +49,7 @@ public class Game : GameWindow
         _shader = new GeometryShader("Shaders/Shader.vert", "Shaders/Shader.frag");
         _shader.SetFloat("POINTSIZE", Globals.POINTSIZE);
 
-        int dimensions = 5;
+        int dimensions = 3;
         _model.particleCount = dimensions * dimensions * dimensions;
         float[] positions = _model.GeneratePositions(dimensions);
         float[] colors = _model.GenerateColors(dimensions);
@@ -64,19 +64,22 @@ public class Game : GameWindow
         base.OnRenderFrame(args);
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-        GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
+        // GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
         float deltaTime = (float)args.Time;
         _avgFrameRate = (_avgFrameRate * _frameCount + deltaTime) / (_frameCount + 1);
         _frameCount += 1;
 
         if (_isSimulating)
         {
+            _shader.SwapPositionBuffers();
+            _model.SwapPositionBuffers();
+
             GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
             _model.velocityUpdater.Use();
             _model.velocityUpdater.SetFloat("deltaTime", deltaTime);
             GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, _model.velocityUpdater.buffers["positionsCurrent"]);
             GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, _model.velocityUpdater.buffers["velocities"]);
-            GL.DispatchCompute(_model.particleCount, _model.particleCount, 1);
+            _model.velocityUpdater.Dispatch(_model.particleCount * (_model.particleCount - 1) / 2, 1, 1);
 
             Console.WriteLine(GL.GetError().ToString());
 
@@ -89,7 +92,7 @@ public class Game : GameWindow
             GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 2, _model.positionUpdater.buffers["velocities"]);
             _model.positionUpdater.SetFloat("deltaTime", deltaTime);
             _model.positionUpdater.Dispatch(_model.particleCount, 1, 1);
-            Console.WriteLine(GL.GetError().ToString());
+            // Console.WriteLine(GL.GetError().ToString());
         }
 
         _shader.Use();
@@ -99,14 +102,11 @@ public class Game : GameWindow
         _shader.SetMatrix4("view", _camera.view);
         _shader.SetMatrix4("projection", _camera.projection);
 
-        GL.MemoryBarrier(MemoryBarrierFlags.AllBarrierBits);
+        // GL.MemoryBarrier(MemoryBarrierFlags.AllBarrierBits);
         GL.BindVertexArray(_shader.vertexArrays["positionsColorsCurrent"]);
         GL.DrawArrays(PrimitiveType.Points, 0, _model.particleCount);
 
         SwapBuffers();
-        _shader.SwapPositionBuffers();
-        _model.SwapPositionBuffers();
-
     }
     protected override void OnUpdateFrame(FrameEventArgs args)
     {

@@ -57,8 +57,11 @@ class ParticleModel
                 for (int k = 0; k < dimensions; k++)
                 {
                     int index = i + dimensions * j + dimensions * dimensions * k;
-                    particles.SetPosition(index, i - dimensions / 2, j - dimensions / 2, k - dimensions / 2);
-                    particles.SetVelocity(index, (float)i / dimensions, (float)j / dimensions, (float)(dimensions - i - j) / dimensions);
+                    int spacing = 10;
+                    particles.SetPosition(index, spacing * (i - dimensions / 2), spacing * (j - dimensions / 2), spacing * (k - dimensions / 2));
+                    // particles.SetVelocity(index, (float)i / dimensions, (float)j / dimensions, (float)(dimensions - i - j) / dimensions);
+                    particles.SetVelocity(index, 0, 0, 0);
+
                 }
             }
         }
@@ -79,7 +82,7 @@ class ParticleModel
                 for (int k = 0; k < dimensions; k++)
                 {
                     currentIndex = 3 * (i + dimensions * j + dimensions * dimensions * k);
-                    velocities[currentIndex] = 1.1f;
+                    // velocities[currentIndex] = 1.1f;
                 }
             }
         }

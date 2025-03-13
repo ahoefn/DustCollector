@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <MainEntryPoint>DustCollector.Program</MainEntryPoint>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +17,6 @@
     <PackageReference Include="MSTest.TestAdapter" Version="3.8.2" />
     <PackageReference Include="MSTest.TestFramework" Version="3.8.2" /> -->
     <PackageReference Include="OpenTK" Version="4.9.3" />
-    <None Update="C:\Users\hoefn\Code Projects\OpenTK test\DustCollector\Shaders\**" CopyToOutputDirectory="PreserveNewest"/>
+    <None Update="C:\Users\hoefn\Code Projects\DustCollector\DustCollector\Shaders\**" CopyToOutputDirectory="PreserveNewest"/>
   </ItemGroup>
 </Project>

@@ -44,9 +44,12 @@ void main()
     // positionsCurrent.pos[index_in+2]=0;
     // positionsCurrent.pos[index_in+1]=0;
     // positionsCurrent.pos[index_in]=index_in/10;
-    velocities.v[index_in]+=0.5f*deltaTime;
+    velocities.v[index_in]=index_in;
+    velocities.v[index_in+1]=index_raw_in;
+    velocities.v[index_in+2]=velocities.v[index_in+2]+1;
+    atomicAdd(velocities.v[0],1);
 
-    velocities.v[index_out]+=0.5f*deltaTime;
+    // velocities.v[index_out]-=10*deltaTime;
 
     // velocities.v[index_out]+= forceVec.x;
     // velocities.v[index_out+1]+= forceVec.y; 

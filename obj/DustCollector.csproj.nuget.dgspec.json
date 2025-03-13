@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\hoefn\\Code Projects\\OpenTK test\\DustCollector\\DustCollector.csproj": {}
+    "C:\\Users\\hoefn\\Code Projects\\DustCollector\\DustCollector\\DustCollector.csproj": {}
   },
   "projects": {
-    "C:\\Users\\hoefn\\Code Projects\\OpenTK test\\DustCollector\\DustCollector.csproj": {
+    "C:\\Users\\hoefn\\Code Projects\\DustCollector\\DustCollector\\DustCollector.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\hoefn\\Code Projects\\OpenTK test\\DustCollector\\DustCollector.csproj",
+        "projectUniqueName": "C:\\Users\\hoefn\\Code Projects\\DustCollector\\DustCollector\\DustCollector.csproj",
         "projectName": "DustCollector",
-        "projectPath": "C:\\Users\\hoefn\\Code Projects\\OpenTK test\\DustCollector\\DustCollector.csproj",
+        "projectPath": "C:\\Users\\hoefn\\Code Projects\\DustCollector\\DustCollector\\DustCollector.csproj",
         "packagesPath": "C:\\Users\\hoefn\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\hoefn\\Code Projects\\OpenTK test\\DustCollector\\obj\\",
+        "outputPath": "C:\\Users\\hoefn\\Code Projects\\DustCollector\\DustCollector\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\hoefn\\AppData\\Roaming\\NuGet\\NuGet.Config"

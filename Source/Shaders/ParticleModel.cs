@@ -17,6 +17,27 @@ class ParticleModel
     public ComputeShader velocityUpdater;
 
     //Methods:
+    public void Simulate(float deltaTime)
+    {
+        GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
+        velocityUpdater.Use();
+        velocityUpdater.SetFloat("deltaTime", deltaTime);
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, velocityUpdater.buffers["positionsCurrent"]);
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, velocityUpdater.buffers["velocities"]);
+        velocityUpdater.Dispatch(particleCount * (particleCount - 1) / 2, 1, 1);
+
+
+        GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
+        positionUpdater.Use();
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, velocityUpdater.buffers["positionsCurrent"]);
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, positionUpdater.buffers["positionsFuture"]);
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 2, positionUpdater.buffers["velocities"]);
+        positionUpdater.SetFloat("deltaTime", deltaTime);
+        positionUpdater.Dispatch(particleCount, 1, 1);
+    }
+
+
+
     public float[] GeneratePositions(int dimensions)
     {//Generates particles spaced out in a cube
 

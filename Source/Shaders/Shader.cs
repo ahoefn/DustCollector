@@ -21,6 +21,8 @@ public class Shader : IDisposable
     private protected BufferTarget _bufferTarget;
 
     //Methods:
+
+
     public void UpdateUniforms()
     {
         Use();
@@ -190,6 +192,19 @@ public class GeometryShader : Shader
     public Dictionary<string, int> vertexArrays;
 
     //Methods:
+    public void Render(int particleCount, Camera camera)
+    {
+        Use();
+        SetMatrix4("model", camera.model);
+        SetMatrix4("view", camera.view);
+        SetMatrix4("projection", camera.projection);
+
+        // GL.MemoryBarrier(MemoryBarrierFlags.AllBarrierBits);
+        GL.BindVertexArray(vertexArrays["positionsColorsCurrent"]);
+        GL.DrawArrays(PrimitiveType.Points, 0, particleCount);
+
+
+    }
     public void CreatePositionColorArrays(float[] positions, float[] colors)
     {
         CreateVertexBuffer("positionsCurrent", positions, BufferUsageHint.StreamDraw);

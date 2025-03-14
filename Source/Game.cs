@@ -43,19 +43,22 @@ public class Game : GameWindow
         InitializeShaders();
     }
     private void InitializeShaders()
-    {//Create shader and buffers:
+    {
+        //Create shader and buffers:
         _model = new ParticleModel(Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH);
         _shader = new GeometryShader(Paths.VERTEXPATH, Paths.FRAGMENTPATH);
+
+        //Set globals:
         _shader.SetFloat("POINTSIZE", Globals.POINTSIZE);
 
+        //Create initial data:
         int dimensions = 3;
         _model.particleCount = dimensions * dimensions * dimensions;
         float[] positions = _model.GeneratePositions(dimensions);
         float[] colors = _model.GenerateColors(dimensions);
         float[] velocities = _model.GenerateVelocities(dimensions);
 
-
-
+        //Create buffers and vertex arrays:
         _shader.CreatePositionColorArrays(positions, colors);
         _model.InitializeBuffers(_shader.buffers["positionsCurrent"], _shader.buffers["positionsFuture"], velocities);
         _model.velocityUpdater.SetFloat("offSetX", 0);
@@ -64,68 +67,63 @@ public class Game : GameWindow
     protected override void OnRenderFrame(FrameEventArgs args)
     {
         base.OnRenderFrame(args);
-        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-        // GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
+        //Need to clear colorbuffer every render.
+        GL.Clear(ClearBufferMask.ColorBufferBit);
+
         float deltaTime = (float)args.Time;
-        _avgFrameRate = (_avgFrameRate * _frameCount + deltaTime) / (_frameCount + 1);
-        _frameCount += 1;
 
         if (_isSimulating)
         {
-            _shader.SwapPositionBuffers();
-            _model.SwapPositionBuffers();
-
-            GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
-            _model.velocityUpdater.Use();
-            _model.velocityUpdater.SetFloat("deltaTime", deltaTime);
-            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, _model.velocityUpdater.buffers["positionsCurrent"]);
-            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, _model.velocityUpdater.buffers["velocities"]);
-            _model.velocityUpdater.Dispatch(_model.particleCount * (_model.particleCount - 1) / 2, 1, 1);
-
-            Console.WriteLine(GL.GetError().ToString());
-
-
-
-            GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
-            _model.positionUpdater.Use();
-            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, _model.velocityUpdater.buffers["positionsCurrent"]);
-            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, _model.positionUpdater.buffers["positionsFuture"]);
-            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 2, _model.positionUpdater.buffers["velocities"]);
-            _model.positionUpdater.SetFloat("deltaTime", deltaTime);
-            _model.positionUpdater.Dispatch(_model.particleCount, 1, 1);
-            // Console.WriteLine(GL.GetError().ToString());
+            _model.Simulate(deltaTime);
         }
 
-        _shader.Use();
-        // _camera.model = Matrix4.CreateRotationX((float)timeValue / 5);
+        //Update camera to current view and start rendering
         _camera.view = Matrix4.LookAt(_camera.position, _camera.position + _camera.front, _camera.up);
-        _shader.SetMatrix4("model", _camera.model);
-        _shader.SetMatrix4("view", _camera.view);
-        _shader.SetMatrix4("projection", _camera.projection);
+        _shader.Render(_model.particleCount, _camera);
 
-        // GL.MemoryBarrier(MemoryBarrierFlags.AllBarrierBits);
-        GL.BindVertexArray(_shader.vertexArrays["positionsColorsCurrent"]);
-        GL.DrawArrays(PrimitiveType.Points, 0, _model.particleCount);
-
+        //Swap render and simulation buffers
         SwapBuffers();
+        _shader.SwapPositionBuffers();
+        _model.SwapPositionBuffers();
+
+        //Update framerate:
+        _avgFrameRate = (_avgFrameRate * _frameCount + deltaTime) / (_frameCount + 1);
+        _frameCount += 1;
+
+
     }
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
         if (!IsFocused) { return; }
 
-        KeyboardState input = KeyboardState;
         base.OnUpdateFrame(args);
 
-        //Keyboardinputs: 
-        if (input.IsKeyDown(Keys.Escape)) { Close(); }
         float deltaTime = (float)args.Time;
+        KeyboardInputHandler(deltaTime);
+        MouseInputHandler();
+    }
+    private void KeyboardInputHandler(float deltaTime)
+    {
+        KeyboardState input = KeyboardState;
+
+        if (input.IsKeyDown(Keys.Escape)) { Close(); }
+
+        //Movement keys:
         if (input.IsKeyDown(Keys.W)) { _camera.position += _camera.front * Globals.MOVSPEED * deltaTime; }
         if (input.IsKeyDown(Keys.S)) { _camera.position -= _camera.front * Globals.MOVSPEED * deltaTime; }
         if (input.IsKeyDown(Keys.A)) { _camera.position -= _camera.right * Globals.MOVSPEED * deltaTime; }
         if (input.IsKeyDown(Keys.D)) { _camera.position += _camera.right * Globals.MOVSPEED * deltaTime; }
-        if (input.IsKeyDown(Keys.LeftControl)) { _camera.position -= _camera.up * Globals.MOVSPEED * deltaTime; }
-        if (input.IsKeyDown(Keys.LeftShift)) { _camera.position += _camera.up * Globals.MOVSPEED * deltaTime; }
+        if (input.IsKeyDown(Keys.LeftControl))
+        {
+            _camera.position -= _camera.up * Globals.MOVSPEED * deltaTime;
+        }
+        if (input.IsKeyDown(Keys.LeftShift))
+        {
+            _camera.position += _camera.up * Globals.MOVSPEED * deltaTime;
+        }
+
+        //Start/stop simulation and show framerate:
         if (input.IsKeyPressed(Keys.Space))
         {
             if (_isSimulating)
@@ -134,16 +132,15 @@ public class Game : GameWindow
                 _avgFrameRate = 0;
                 _frameCount = 0;
             }
-
             _isSimulating = !_isSimulating;
-
         }
-        //Mouse Inputs:
+    }
+    private void MouseInputHandler()
+    {
         if (_firstMouse)
         {
             _prevMousePos = new Vector2(MouseState.X, MouseState.Y);
             _firstMouse = false;
-
         }
         else
         {
@@ -161,7 +158,7 @@ public class Game : GameWindow
         _camera.UpdateAspect(e.Width, e.Height);
     }
     protected override void OnUnload()
-    {
+    {//TODO: implement dispose for _model.
         base.OnUnload();
         _shader.Dispose();
     }

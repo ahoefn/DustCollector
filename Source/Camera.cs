@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.IO;
 namespace DustCollector;
 
-class Camera
+public class Camera
 {
     public Camera(int width, int height)
     {

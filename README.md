@@ -4,7 +4,7 @@ In this repo is a simple particle simulator I have built / am building. Once ope
 
 
 #### Dependencies
-[OpenTK v4.9.3]{https://www.nuget.org/packages/OpenTK/)
+[OpenTK v4.9.3](https://www.nuget.org/packages/OpenTK/)
 
 #### Requirements
 Requries OpenGL v4.5 or later.

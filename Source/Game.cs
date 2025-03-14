@@ -44,8 +44,8 @@ public class Game : GameWindow
     }
     private void InitializeShaders()
     {//Create shader and buffers:
-        _model = new ParticleModel("Shaders/PositionUpdater.comp", "Shaders/VelocityUpdater.comp");
-        _shader = new GeometryShader("Shaders/Shader.vert", "Shaders/Shader.frag");
+        _model = new ParticleModel(Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH);
+        _shader = new GeometryShader(Paths.VERTEXPATH, Paths.FRAGMENTPATH);
         _shader.SetFloat("POINTSIZE", Globals.POINTSIZE);
 
         int dimensions = 3;

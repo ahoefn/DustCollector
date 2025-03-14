@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DustCollector\Source.csproj" />
-    <None Update="C:\Users\hoefn\Code Projects\DustCollector\DustCollector\Shaders\**" CopyToOutputDirectory="PreserveNewest" />
+    <ProjectReference Include="..\Source\DustCollector.csproj" />
+    <None Update="C:\Users\hoefn\Code Projects\DustCollector\Source\Shaders\**" CopyToOutputDirectory="PreserveNewest" />
     <PackageReference Include="MSTest" Version="3.8.2" />
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>

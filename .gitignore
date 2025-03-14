@@ -1,4 +1,6 @@
-/Source/bin
+//Source/obj
+/Tests/obj
+Source/bin
 /Tests/bin
 /.vscode
 /DustCollector.sln

@@ -1,6 +1,5 @@
 using OpenTK.Mathematics;
 namespace DustCollector;
-
 struct Particles
 {
     public Particles(int count_in)

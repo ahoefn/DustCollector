@@ -1,39 +1,35 @@
-using System.Diagnostics;
 using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
-namespace DustCollector;
-
-
+namespace DustCollector.Renderer;
 class ParticleModel
 {
     public ParticleModel(string positionLocation, string velocityLocation)
     {
-        positionUpdater = new ComputeShader(positionLocation);
-        velocityUpdater = new ComputeShader(velocityLocation);
+        _positionUpdater = new ComputeShader(positionLocation);
+        _velocityUpdater = new ComputeShader(velocityLocation);
     }
     //Properties:
     public int particleCount = 0;
-    public ComputeShader positionUpdater;
-    public ComputeShader velocityUpdater;
+    private ComputeShader _positionUpdater;
+    private ComputeShader _velocityUpdater;
 
     //Methods:
     public void Simulate(float deltaTime)
     {
         GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
-        velocityUpdater.Use();
-        velocityUpdater.SetFloat("deltaTime", deltaTime);
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, velocityUpdater.buffers["positionsCurrent"]);
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, velocityUpdater.buffers["velocities"]);
-        velocityUpdater.Dispatch(particleCount * (particleCount - 1) / 2, 1, 1);
+        _velocityUpdater.Use();
+        _velocityUpdater.SetFloat("deltaTime", deltaTime);
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, _velocityUpdater.buffers["positionsCurrent"]);
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, _velocityUpdater.buffers["velocities"]);
+        _velocityUpdater.Dispatch(particleCount * (particleCount - 1) / 2, 1, 1);
 
 
         GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
-        positionUpdater.Use();
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, velocityUpdater.buffers["positionsCurrent"]);
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, positionUpdater.buffers["positionsFuture"]);
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 2, positionUpdater.buffers["velocities"]);
-        positionUpdater.SetFloat("deltaTime", deltaTime);
-        positionUpdater.Dispatch(particleCount, 1, 1);
+        _positionUpdater.Use();
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, _velocityUpdater.buffers["positionsCurrent"]);
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, _positionUpdater.buffers["positionsFuture"]);
+        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 2, _positionUpdater.buffers["velocities"]);
+        _positionUpdater.SetFloat("deltaTime", deltaTime);
+        _positionUpdater.Dispatch(particleCount, 1, 1);
     }
 
 
@@ -134,16 +130,16 @@ class ParticleModel
     }
     public void InitializeBuffers(int positionsCurrent, int positionsFuture, float[] velocities)
     {
-        positionUpdater.ShareBuffer("positionsCurrent", positionsCurrent, 0);
-        positionUpdater.ShareBuffer("positionsFuture", positionsFuture, 1);
-        positionUpdater.CreateStorageBuffer("velocities", velocities, 2, BufferUsageHint.StreamDraw);
+        _positionUpdater.ShareBuffer("positionsCurrent", positionsCurrent, 0);
+        _positionUpdater.ShareBuffer("positionsFuture", positionsFuture, 1);
+        _positionUpdater.CreateStorageBuffer("velocities", velocities, 2, BufferUsageHint.StreamDraw);
 
-        velocityUpdater.ShareBuffer("positionsCurrent", positionsCurrent, 0);
-        velocityUpdater.ShareBuffer("velocities", positionUpdater.buffers["velocities"], 1);
+        _velocityUpdater.ShareBuffer("positionsCurrent", positionsCurrent, 0);
+        _velocityUpdater.ShareBuffer("velocities", _positionUpdater.buffers["velocities"], 1);
     }
     public void SwapPositionBuffers()
     {
-        positionUpdater.SwapPositionBuffers();
-        velocityUpdater.UpdateBuffer("positionsCurrent", positionUpdater.buffers["positionsCurrent"], 0);
+        _positionUpdater.SwapPositionBuffers();
+        _velocityUpdater.UpdateBuffer("positionsCurrent", _positionUpdater.buffers["positionsCurrent"], 0);
     }
 }

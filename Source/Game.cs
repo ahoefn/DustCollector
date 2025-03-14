@@ -6,16 +6,14 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Diagnostics;
 using System.IO;
 namespace DustCollector;
-
-
 public class Game : GameWindow
 {
     public Game(int width, int height, string title)
     : base(GameWindowSettings.Default, new NativeWindowSettings() { ClientSize = (width, height), Title = title })
     { }
     //Properties:
-    private GeometryShader _shader;
-    private ParticleModel _model;
+    private Renderer.GeometryShader _shader;
+    private Renderer.ParticleModel _model;
     private Stopwatch _timer;
     private Camera _camera;
     private bool _firstMouse = true;
@@ -45,8 +43,8 @@ public class Game : GameWindow
     private void InitializeShaders()
     {
         //Create shader and buffers:
-        _model = new ParticleModel(Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH);
-        _shader = new GeometryShader(Paths.VERTEXPATH, Paths.FRAGMENTPATH);
+        _model = new Renderer.ParticleModel(Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH);
+        _shader = new Renderer.GeometryShader(Paths.VERTEXPATH, Paths.FRAGMENTPATH);
 
         //Set globals:
         _shader.SetFloat("POINTSIZE", Globals.POINTSIZE);
@@ -61,8 +59,6 @@ public class Game : GameWindow
         //Create buffers and vertex arrays:
         _shader.CreatePositionColorArrays(positions, colors);
         _model.InitializeBuffers(_shader.buffers["positionsCurrent"], _shader.buffers["positionsFuture"], velocities);
-        _model.velocityUpdater.SetFloat("offSetX", 0);
-
     }
     protected override void OnRenderFrame(FrameEventArgs args)
     {

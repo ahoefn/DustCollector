@@ -1,5 +1,4 @@
 namespace DustCollector;
-
 public static class Globals
 {
     public const float POINTSIZE = 200;

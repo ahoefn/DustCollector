@@ -1,5 +1,5 @@
 using OpenTK.Graphics.OpenGL4;
-namespace DustCollector;
+namespace DustCollector.Renderer;
 public class ComputeShader : Shader
 {
     public ComputeShader(string computePath) : base(BufferTarget.ShaderStorageBuffer)

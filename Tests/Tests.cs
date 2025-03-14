@@ -3,10 +3,10 @@ using OpenTK.Windowing.Desktop;
 
 namespace DustCollector.Tests;
 // Note: It seems like a proper testing environment (such as MSTest) can unfortunately not be used with OpenTK
-// As OpenTK always requires you to run in the main thread, which during testing can not be guaranteed
+// as OpenTK always requires you to run in the main thread, which during testing can not be guaranteed
 // (at least with MSTest).
 
-
+//Input struct for test functions:
 public struct TestParams
 {
     public TestParams(GameWindow window_in, int program_in)
@@ -17,6 +17,8 @@ public struct TestParams
     public readonly GameWindow window;
     public readonly int program;
 }
+
+//Main program:
 class TestProgram
 {
     private static void Main(string[] args)

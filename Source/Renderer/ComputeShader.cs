@@ -4,38 +4,42 @@ public class ComputeShader : Shader
 {
     public ComputeShader(string computePath) : base(BufferTarget.ShaderStorageBuffer)
     {
-        string computeShaderSource = File.ReadAllText(computePath);
-        int computeShader = GL.CreateShader(ShaderType.ComputeShader);
-        GL.ShaderSource(computeShader, computeShaderSource);
+        //Compile shader and attach to program:
+        int computeShader = CompileShader(computePath, ShaderType.ComputeShader);
 
-        GL.CompileShader(computeShader);
-        GL.GetShader(computeShader, ShaderParameter.CompileStatus, out int succes);
-        if (succes == 0)
-        {
-            string infoLog = GL.GetShaderInfoLog(computeShader);
-            Console.WriteLine(infoLog + "No compute shader");
-        }
         handle = GL.CreateProgram();
         GL.AttachShader(handle, computeShader);
         GL.LinkProgram(handle);
 
-        GL.GetProgram(handle, GetProgramParameterName.LinkStatus, out succes);
+        //Check succes:
+        GL.GetProgram(handle, GetProgramParameterName.LinkStatus, out int succes);
         if (succes == 0)
         {
             string infoLog = GL.GetProgramInfoLog(handle);
-            Console.WriteLine(infoLog + "No program");
+            throw new ArgumentException("Could not Create program for compute shader, check shader code. InfoLog: " + infoLog, nameof(computePath));
         }
 
+        //Cleanup shader as it is not necessary anymore:
         GL.DetachShader(handle, computeShader);
         GL.DeleteShader(computeShader);
 
+        //Create uniform dictionary:
         UpdateUniforms();
     }
     public void Dispatch(int x_in, int y_in, int z_in)
     {// If a dispatch workgroup is too big (>Globals.WORKGROUPSIZE_X), separates the different dispatches in batches. 
-        if (y_in > Globals.WORKGROUPSIZE_Y) { throw new ArgumentOutOfRangeException(nameof(y_in), "Workgroupsize in y direction is too large, consider using Dispatch3d."); }
-        if (z_in > Globals.WORKGROUPSIZE_Z) { throw new ArgumentOutOfRangeException(nameof(z_in), "Workgroupsize in z direction is too large, consider using Dispatch3d."); }
 
+        //Check input sizes:
+        if (y_in > Globals.WORKGROUPSIZE_Y)
+        {
+            throw new ArgumentOutOfRangeException(nameof(y_in), "Workgroupsize in y direction is too large, consider using Dispatch3D.");
+        }
+        if (z_in > Globals.WORKGROUPSIZE_Z)
+        {
+            throw new ArgumentOutOfRangeException(nameof(z_in), "Workgroupsize in z direction is too large, consider using Dispatch3D.");
+        }
+
+        //Dispatch:
         (int x, int y, int z) currentCount = (x_in, y_in, z_in);
         int xCount = (currentCount.x - (currentCount.x % Globals.WORKGROUPSIZE_X)) / Globals.WORKGROUPSIZE_X;
 
@@ -86,6 +90,6 @@ public class ComputeShader : Shader
         GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, buffers["positionsFuture"]);
         GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, buffers["positionsCurrent"]);
         (buffers["positionsFuture"], buffers["positionsCurrent"])
-    = (buffers["positionsCurrent"], buffers["positionsFuture"]);
+        = (buffers["positionsCurrent"], buffers["positionsFuture"]);
     }
 }

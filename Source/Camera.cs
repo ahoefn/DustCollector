@@ -6,14 +6,14 @@ public class Camera
 {
     public Camera(int width, int height)
     {
+        //Initial position and view vectors:
         position = new Vector3(0.0f, 0.0f, 0.0f);
-
         pitch = 0;
         yaw = (float)Math.PI * -1 / 2;
         front = new Vector3(0.0f, 0.0f, -1.0f); //Oriented in reverse z direction
         up = new Vector3(0.0f, 1.0f, 0.0f);
 
-
+        //Initialize matrices:
         _height = height;
         _width = width;
         model = Matrix4.Identity;
@@ -43,10 +43,12 @@ public class Camera
     {
         yaw += delta.X * Globals.MOUSESENSITIVITY;
 
+        //Limit up/down orientation between +-90 degrees:
         if (pitch > (float)Math.PI / 2 - 0.05f) { pitch = (float)Math.PI / 2 - 0.05f; }
         else if (pitch < -(float)Math.PI / 2 + 0.05f) { pitch = -(float)Math.PI / 2 + 0.05f; }
         else { pitch -= delta.Y * Globals.MOUSESENSITIVITY; }
 
+        //Update orientation vectors:
         front.X = (float)Math.Cos(pitch) * (float)Math.Cos(yaw);
         front.Y = (float)Math.Sin(pitch);
         front.Z = (float)Math.Cos(pitch) * (float)Math.Sin(yaw);
@@ -54,6 +56,5 @@ public class Camera
 
         var right = Vector3.Normalize(Vector3.Cross(front, Vector3.UnitY));
         up = Vector3.Normalize(Vector3.Cross(right, front));
-
     }
 }

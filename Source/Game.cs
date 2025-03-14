@@ -12,6 +12,8 @@ public class Game : GameWindow
     : base(GameWindowSettings.Default, new NativeWindowSettings() { ClientSize = (width, height), Title = title })
     { }
     //Properties:
+
+    //TODO: combine shaders+camera into class?
     private Renderer.GeometryShader _shader;
     private Renderer.ParticleModel _model;
     private Stopwatch _timer;
@@ -86,8 +88,6 @@ public class Game : GameWindow
         //Update framerate:
         _avgFrameRate = (_avgFrameRate * _frameCount + deltaTime) / (_frameCount + 1);
         _frameCount += 1;
-
-
     }
     protected override void OnUpdateFrame(FrameEventArgs args)
     {

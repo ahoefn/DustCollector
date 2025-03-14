@@ -1,4 +1,6 @@
 namespace DustCollector;
+
+//Global numbers:
 public static class Globals
 {
     public const float POINTSIZE = 200;
@@ -10,6 +12,7 @@ public static class Globals
     public const int WORKGROUPSIZE_Z = 65535;
 }
 
+//Global paths:
 public static class Paths
 {
     public const string VERTEXPATH = "Shaders/GSLS/Shader.vert";

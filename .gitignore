@@ -1,2 +1,4 @@
-/bin
+/Source/bin
+/Tests/bin
+/.vscode
 /DustCollector.sln

@@ -1,8 +1,9 @@
 using OpenTK.Graphics.OpenGL4;
-namespace DustCollector.Renderer;
+namespace DustCollector.GameEngine.Shaders;
 public class GeometryShader : Shader
 {
-    public GeometryShader(string vertexPath, string fragmentPath) : base(BufferTarget.ArrayBuffer)
+    public GeometryShader(string vertexPath, string fragmentPath, BufferHandler bufferHandler)
+    : base(BufferTarget.ArrayBuffer, bufferHandler)
     {
         //Compile shaders and link to program:
         int vertexShader = CompileShader(vertexPath, ShaderType.VertexShader);
@@ -37,7 +38,7 @@ public class GeometryShader : Shader
     public Dictionary<string, int> vertexArrays;
 
     //Methods:
-    public void Render(int particleCount, Camera camera)
+    public void Render(int particleCount, Camera camera, int vertexArray)
     {
         Use();
 
@@ -47,33 +48,9 @@ public class GeometryShader : Shader
         SetMatrix4("projection", camera.projection);
 
         //Draw:
-        GL.BindVertexArray(vertexArrays["positionsColorsCurrent"]);
+        GL.BindVertexArray(vertexArray);
         GL.DrawArrays(PrimitiveType.Points, 0, particleCount);
     }
-    public void CreatePositionColorArrays(float[] positions, float[] colors)
-    {
-        //Create storage buffers:
-        CreateVertexBuffer("positionsCurrent", positions, BufferUsageHint.StreamDraw);
-        CreateVertexBuffer("positionsFuture", positions, BufferUsageHint.StreamDraw);
-        CreateVertexBuffer("colors", colors, BufferUsageHint.StreamDraw);
-
-        //Create arrays and bind the buffers to them:
-        CreateVertexArray("positionsColorsCurrent");
-        BindBufferToArray("positionsCurrent", "positionsColorsCurrent", 0, 3);
-        BindBufferToArray("colors", "positionsColorsCurrent", 1, 3);
-
-        CreateVertexArray("positionsColorsFuture");
-        BindBufferToArray("positionsFuture", "positionsColorsFuture", 0, 3);
-        BindBufferToArray("colors", "positionsColorsFuture", 1, 3);
-    }
-    public void SwapPositionBuffers()
-    {
-        (buffers["positionsFuture"], buffers["positionsCurrent"])
-        = (buffers["positionsCurrent"], buffers["positionsFuture"]);
-        (vertexArrays["positionsColorsFuture"], vertexArrays["positionsColorsCurrent"])
-        = (vertexArrays["positionsColorsCurrent"], vertexArrays["positionsColorsFuture"]);
-    }
-
     public void BindBufferToArray(string buffer, string array, int location, int stride)
     {
         Use();

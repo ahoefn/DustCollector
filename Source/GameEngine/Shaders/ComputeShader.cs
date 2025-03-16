@@ -1,12 +1,13 @@
 using OpenTK.Graphics.OpenGL4;
-namespace DustCollector.Renderer;
+namespace DustCollector.GameEngine.Shaders;
+
 public class ComputeShader : Shader
 {
-    public ComputeShader(string computePath) : base(BufferTarget.ShaderStorageBuffer)
+    public ComputeShader(string computePath, BufferHandler bufferHandler)
+    : base(BufferTarget.ShaderStorageBuffer, bufferHandler)
     {
         //Compile shader and attach to program:
         int computeShader = CompileShader(computePath, ShaderType.ComputeShader);
-
         handle = GL.CreateProgram();
         GL.AttachShader(handle, computeShader);
         GL.LinkProgram(handle);
@@ -25,10 +26,41 @@ public class ComputeShader : Shader
 
         //Create uniform dictionary:
         UpdateUniforms();
+        bufferLocations = new Dictionary<int, string>();
+    }
+    public Dictionary<int, string> bufferLocations;
+
+    private void SetupBuffers()
+    {
+        foreach ((int location, string buffer) in bufferLocations)
+        {
+            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, location, _bufferHandler.buffers[buffer]);
+        }
+    }
+    public void Dispatch1D(int count)
+    {
+        Use();
+        SetupBuffers();
+        if (count < Globals.WORKGROUPSIZE_X)
+        {
+            SetInt("offSetX", 0);
+            GL.DispatchCompute(count, 1, 1);
+            return;
+        }
+        int remainder = count % Globals.WORKGROUPSIZE_X;
+        int yCount = (count - remainder) / Globals.WORKGROUPSIZE_X;
+
+        SetInt("offSetX", 0);
+        GL.DispatchCompute(Globals.WORKGROUPSIZE_X, yCount, 1);
+
+        SetInt("offSetX", yCount * Globals.WORKGROUPSIZE_X);
+        GL.DispatchCompute(remainder, 1, 1);
+
     }
     public void Dispatch(int x_in, int y_in, int z_in)
     {// If a dispatch workgroup is too big (>Globals.WORKGROUPSIZE_X), separates the different dispatches in batches. 
-
+        Use();
+        SetupBuffers();
         //Check input sizes:
         if (y_in > Globals.WORKGROUPSIZE_Y)
         {
@@ -56,6 +88,8 @@ public class ComputeShader : Shader
     public void Dispatch3D(int x_in, int y_in, int z_in)
     {// Same as dispatch, but for all three dimensions 
      // NOTE: requires that offSetX, offSetY and offSetZ are ALL used explicitly in the shader code, otherwise the compiler removes them and trying to set them will give an error.
+        Use();
+        SetupBuffers();
         (int x, int y, int z) moduloCount = (x_in % Globals.WORKGROUPSIZE_X, y_in % Globals.WORKGROUPSIZE_X, z_in % Globals.WORKGROUPSIZE_X);
         int xCount = (x_in - moduloCount.x) / Globals.WORKGROUPSIZE_X;
         int yCount = (y_in - moduloCount.y) / Globals.WORKGROUPSIZE_Y;
@@ -84,12 +118,5 @@ public class ComputeShader : Shader
         SetInt("offSetX", xCount * Globals.WORKGROUPSIZE_X);
         GL.DispatchCompute(moduloCount.x, moduloCount.y, moduloCount.z);
     }
-    public void SwapPositionBuffers()
-    {
-        Use();
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, buffers["positionsFuture"]);
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, buffers["positionsCurrent"]);
-        (buffers["positionsFuture"], buffers["positionsCurrent"])
-        = (buffers["positionsCurrent"], buffers["positionsFuture"]);
-    }
+
 }

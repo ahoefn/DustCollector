@@ -1,21 +1,21 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-namespace DustCollector.Renderer;
-public class Shader : IDisposable
+namespace DustCollector.GameEngine.Shaders;
+public class Shader : IDisposable, IBufferHandler
 {
-    public Shader(BufferTarget bufferTarget_in)
+    public Shader(BufferTarget bufferTarget_in, BufferHandler bufferHandler_in)
     {
         _uniformlocations = new Dictionary<string, int>();
         buffers = new Dictionary<string, int>();
-        _bufferTarget = bufferTarget_in;
+        _bufferHandler = bufferHandler_in;
+
     }
     //Data:
     public int handle { get; protected init; }
     protected bool disposedValue = false;
     protected Dictionary<string, int> _uniformlocations;
     public Dictionary<string, int> buffers;
-    //Should be removed and instead be explicitly used in functions:
-    private protected BufferTarget _bufferTarget;
+    protected BufferHandler _bufferHandler;
 
     //Methods:
     public static int CompileShader(string path, ShaderType type)
@@ -79,6 +79,20 @@ public class Shader : IDisposable
         if (!_uniformlocations.ContainsKey(name)) { Console.WriteLine("Error: no uniform with name " + name); }
         Use();
         GL.Uniform3(_uniformlocations[name], v);
+    }
+
+    public void CreateVertexBuffer(string name, float[] data, BufferUsageHint hint)
+    {
+        _bufferHandler.CreateVertexBuffer(name, data, hint);
+    }
+
+    public void CreateStorageBuffer(string name, float[] data, BufferUsageHint hint)
+    {
+        _bufferHandler.CreateStorageBuffer(name, data, hint);
+    }
+    public void SwapBuffers(string buffer1, string buffer2)
+    {
+        _bufferHandler.SwapBuffers(buffer1, buffer2);
     }
 
     protected virtual void Dispose(bool disposing)

@@ -1,8 +1,16 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-namespace DustCollector.Renderer;
+namespace DustCollector.GameEngine.Shaders;
 
-public class BufferHandler
+interface IBufferHandler
+{
+    public void CreateVertexBuffer(string name, float[] data, BufferUsageHint hint);
+
+    public void CreateStorageBuffer(string name, float[] data, BufferUsageHint hint);
+    public void SwapBuffers(string buffer1, string buffer2);
+}
+
+public class BufferHandler : IBufferHandler
 {
     public BufferHandler()
     {
@@ -37,5 +45,4 @@ public class BufferHandler
     {
         (buffers[buffer1], buffers[buffer2]) = (buffers[buffer2], buffers[buffer1]);
     }
-
 }

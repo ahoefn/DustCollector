@@ -7,7 +7,6 @@ public class Shader : IDisposable, IBufferHandler
     {
         _uniformlocations = new Dictionary<string, int>();
         _bufferHandler = bufferHandler_in;
-
     }
     //Data:
     public int handle { get; protected init; }

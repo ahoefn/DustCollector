@@ -30,7 +30,7 @@ public class BufferHandler : IBufferHandler
     {
         _buffers = new Dictionary<Buffer, int>();
     }
-    private Dictionary<Buffer, int> _buffers;
+    private readonly Dictionary<Buffer, int> _buffers;
     public void CreateVertexBuffer(Buffer name, float[] data, BufferUsageHint hint)
     {
         int vertexBufferObject = GL.GenBuffer();

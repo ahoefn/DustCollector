@@ -28,7 +28,7 @@ public class ComputeShader : Shader
         UpdateUniforms();
         bufferLocations = new Dictionary<int, Buffer>();
     }
-    public Dictionary<int, Buffer> bufferLocations;
+    public readonly Dictionary<int, Buffer> bufferLocations;
 
     private void SetupBuffers()
     {

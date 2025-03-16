@@ -23,10 +23,10 @@ public class Renderer : ICamera, IDisposable
         InitializeShaders();
     }
 
-    private Shaders.GeometryShader _shader;
-    private ParticleModel _model;
-    private BufferHandler _bufferHandler;
-    private Camera _camera;
+    private readonly Shaders.GeometryShader _shader;
+    private readonly ParticleModel _model;
+    private readonly BufferHandler _bufferHandler;
+    private readonly Camera _camera;
     public bool isSimulating = false;
     private void InitializeBuffers()
     {
@@ -74,11 +74,9 @@ public class Renderer : ICamera, IDisposable
         _bufferHandler.SwapBuffers(Buffer.velocitiesCurrent, Buffer.velocitiesFuture);
         // _bufferHandler.SwapBuffers(Buffer.ForcesCurrent, Buffer.ForcesFuture);
 
-        // Need to remap the buffers to the vertex Array:
+        // Need to rebind the buffers to the vertex Array after swapping:
         _shader.BindBufferToArray(Buffer.positionsCurrent, 0, 3);
         _shader.BindBufferToArray(Buffer.Colors, 1, 3);
-
-
     }
 
 

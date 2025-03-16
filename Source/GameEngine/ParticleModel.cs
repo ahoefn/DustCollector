@@ -14,9 +14,9 @@ class ParticleModel : IBufferHandler
     }
     //Properties:
     public int particleCount = 0;
-    private ComputeShader _positionUpdater;
-    private ComputeShader _velocityUpdater;
-    private BufferHandler _bufferHandler;
+    private readonly ComputeShader _positionUpdater;
+    private readonly ComputeShader _velocityUpdater;
+    private readonly BufferHandler _bufferHandler;
 
     //Methods:
     public void Simulate(float deltaTime)

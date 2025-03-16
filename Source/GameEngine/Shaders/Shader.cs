@@ -50,46 +50,6 @@ public class Shader : IDisposable
             _uniformlocations.Add(key, location);
         }
     }
-    public void CreateVertexBuffer(string name, float[] data, BufferUsageHint hint)
-    {
-        Use();
-        int vertexBufferObject = GL.GenBuffer();
-        GL.BindBuffer(_bufferTarget, vertexBufferObject);
-        GL.BufferData(
-                    _bufferTarget,
-                    data.Length * sizeof(float),
-                    data,
-                    hint
-        );
-        buffers.Add(name, vertexBufferObject);
-    }
-    public void CreateStorageBuffer(string name, float[] data, int location, BufferUsageHint hint)
-    {
-        Use();
-        int vertexBufferObject = GL.GenBuffer();
-        GL.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexBufferObject);
-        GL.BufferData(
-                    _bufferTarget,
-                    data.Length * sizeof(float),
-                    data,
-                    hint
-        );
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, location, vertexBufferObject);
-        buffers.Add(name, vertexBufferObject);
-
-    }
-    public void ShareBuffer(string name, int bufferIndex, int location)
-    {//TODO: implement automatic Buffertype here as well
-        Use();
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, location, bufferIndex);
-        buffers.Add(name, bufferIndex);
-    }
-    public void UpdateBuffer(string name, int newBufferIndex, int location)
-    {//TODO: implement automatic Buffertype here as well
-        Use();
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, location, newBufferIndex);
-        buffers[name] = newBufferIndex;
-    }
     public void Use()
     {
         GL.UseProgram(handle);

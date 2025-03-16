@@ -1,6 +1,6 @@
 using OpenTK.Mathematics;
 using System.IO;
-namespace DustCollector;
+namespace DustCollector.GameEngine;
 
 public enum Direction
 {

@@ -26,15 +26,15 @@ public class ComputeShader : Shader
 
         //Create uniform dictionary:
         UpdateUniforms();
-        bufferLocations = new Dictionary<int, string>();
+        bufferLocations = new Dictionary<int, Buffer>();
     }
-    public Dictionary<int, string> bufferLocations;
+    public Dictionary<int, Buffer> bufferLocations;
 
     private void SetupBuffers()
     {
-        foreach ((int location, string buffer) in bufferLocations)
+        foreach ((int location, Buffer buffer) in bufferLocations)
         {
-            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, location, _bufferHandler.buffers[buffer]);
+            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, location, GetBufferHandle(buffer));
         }
     }
     public void Dispatch1D(int count)

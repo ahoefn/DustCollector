@@ -1,15 +1,11 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-namespace DustCollector.Renderer;
+namespace DustCollector.GameEngine;
 
-interface IRenderer
-{
-    public void Render();
 
-}
-public class GameEngine : ICamera, IRenderer, IDisposable
+public class Renderer : ICamera, IDisposable
 {
-    public GameEngine(int width, int height)
+    public Renderer(int width, int height)
     {
         //Global GL Settings, should not be changed anywhere else.
         GL.PointSize(Globals.POINTSIZE);
@@ -19,35 +15,69 @@ public class GameEngine : ICamera, IRenderer, IDisposable
         GL.Enable(EnableCap.ProgramPointSize);
 
         _camera = new Camera(width, height);
-        _model = new ParticleModel(Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH);
-        _shader = new GeometryShader(Paths.VERTEXPATH, Paths.FRAGMENTPATH);
+        _bufferHandler = new BufferHandler();
+        _model = new ParticleModel(Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH, _bufferHandler);
+        _shader = new Shaders.GeometryShader(Paths.VERTEXPATH, Paths.FRAGMENTPATH, _bufferHandler);
 
+        InitializeBuffers();
         InitializeShaders();
     }
-    private void InitializeShaders()
-    {
-        //Set globals:
-        _shader.SetFloat("POINTSIZE", Globals.POINTSIZE);
 
-        //Create initial data:
+    private Shaders.GeometryShader _shader;
+    private ParticleModel _model;
+    private BufferHandler _bufferHandler;
+    private Camera _camera;
+    public bool isSimulating = false;
+    private void InitializeBuffers()
+    {
+        // Create initial data:
         int dimensions = 3;
         _model.particleCount = dimensions * dimensions * dimensions;
         float[] positions = _model.GeneratePositions(dimensions);
         float[] colors = _model.GenerateColors(dimensions);
         float[] velocities = _model.GenerateVelocities(dimensions);
 
-        //Create buffers and vertex arrays:
-        _shader.CreatePositionColorArrays(positions, colors);
-        _model.InitializeBuffers(_shader.buffers["positionsCurrent"], _shader.buffers["positionsFuture"], velocities);
+        // Create buffers:
+        _bufferHandler.CreateStorageBuffer(Buffer.positionsCurrent, positions, BufferUsageHint.StreamDraw);
+        _bufferHandler.CreateStorageBuffer(Buffer.positionsFuture, positions, BufferUsageHint.StreamDraw);
+        _bufferHandler.CreateStorageBuffer(Buffer.velocitiesCurrent, velocities, BufferUsageHint.StreamDraw);
+        _bufferHandler.CreateStorageBuffer(Buffer.velocitiesFuture, velocities, BufferUsageHint.StreamDraw);
+        _bufferHandler.CreateStorageBuffer(Buffer.Colors, colors, BufferUsageHint.StaticRead);
     }
-    private GeometryShader _shader;
-    private ParticleModel _model;
-    private Camera _camera;
-    public bool isSimulating = false;
 
-    //Render methods:
-    public void Render()
+    private void InitializeShaders()
     {
+        // Geometry shader:
+        // Set globals:
+        _shader.SetFloat("POINTSIZE", Globals.POINTSIZE);
+
+        // Create VertexArray:
+        _shader.BindBufferToArray(Buffer.positionsCurrent, 0, 3);
+        _shader.BindBufferToArray(Buffer.Colors, 1, 3);
+
+        // Compute shader:
+        _model.InitializeShaders();
+    }
+    //Render methods:
+    public void Render(float deltaTime)
+    {
+        if (isSimulating)
+        {
+            _model.Simulate(deltaTime);
+        }
+
+        //Update camera to current view and start rendering
+        _shader.Render(_model.particleCount, _camera);
+
+        //Swap render and simulation buffers
+        _bufferHandler.SwapBuffers(Buffer.positionsCurrent, Buffer.positionsFuture);
+        _bufferHandler.SwapBuffers(Buffer.velocitiesCurrent, Buffer.velocitiesFuture);
+        // _bufferHandler.SwapBuffers(Buffer.ForcesCurrent, Buffer.ForcesFuture);
+
+        // Need to remap the buffers to the vertex Array:
+        _shader.BindBufferToArray(Buffer.positionsCurrent, 0, 3);
+        _shader.BindBufferToArray(Buffer.Colors, 1, 3);
+
 
     }
 

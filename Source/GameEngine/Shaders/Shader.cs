@@ -6,7 +6,6 @@ public class Shader : IDisposable, IBufferHandler
     public Shader(BufferTarget bufferTarget_in, BufferHandler bufferHandler_in)
     {
         _uniformlocations = new Dictionary<string, int>();
-        buffers = new Dictionary<string, int>();
         _bufferHandler = bufferHandler_in;
 
     }
@@ -14,7 +13,6 @@ public class Shader : IDisposable, IBufferHandler
     public int handle { get; protected init; }
     protected bool disposedValue = false;
     protected Dictionary<string, int> _uniformlocations;
-    public Dictionary<string, int> buffers;
     protected BufferHandler _bufferHandler;
 
     //Methods:
@@ -81,18 +79,32 @@ public class Shader : IDisposable, IBufferHandler
         GL.Uniform3(_uniformlocations[name], v);
     }
 
-    public void CreateVertexBuffer(string name, float[] data, BufferUsageHint hint)
+    // 
+    // BufferHandler interface:
+    public void CreateVertexBuffer(Buffer buffer, float[] data, BufferUsageHint hint)
     {
-        _bufferHandler.CreateVertexBuffer(name, data, hint);
+        _bufferHandler.CreateVertexBuffer(buffer, data, hint);
     }
 
-    public void CreateStorageBuffer(string name, float[] data, BufferUsageHint hint)
+    public void CreateStorageBuffer(Buffer buffer, float[] data, BufferUsageHint hint)
     {
-        _bufferHandler.CreateStorageBuffer(name, data, hint);
+        _bufferHandler.CreateStorageBuffer(buffer, data, hint);
     }
-    public void SwapBuffers(string buffer1, string buffer2)
+    public void SwapBuffers(Buffer buffer1, Buffer buffer2)
     {
         _bufferHandler.SwapBuffers(buffer1, buffer2);
+    }
+    public int GetBufferHandle(Buffer buffer)
+    {
+        return _bufferHandler.GetBufferHandle(buffer);
+    }
+    public void AddBuffer(Buffer buffer, int bufferInt)
+    {
+        _bufferHandler.AddBuffer(buffer, bufferInt);
+    }
+    public void RemoveBuffer(Buffer buffer)
+    {
+        _bufferHandler.RemoveBuffer(buffer);
     }
 
     protected virtual void Dispose(bool disposing)

@@ -1,39 +1,46 @@
+using DustCollector.GameEngine.Shaders;
 using OpenTK.Graphics.OpenGL4;
-namespace DustCollector.Renderer;
-class ParticleModel
+namespace DustCollector.GameEngine;
+
+
+class ParticleModel : IBufferHandler
 {
-    public ParticleModel(string positionLocation, string velocityLocation)
+    public ParticleModel(string positionPath, string velocityPath, BufferHandler bufferHandler_in)
     {
         //Create compute shaders:
-        _positionUpdater = new ComputeShader(positionLocation);
-        _velocityUpdater = new ComputeShader(velocityLocation);
+        _positionUpdater = new Shaders.ComputeShader(positionPath, bufferHandler_in);
+        _velocityUpdater = new Shaders.ComputeShader(velocityPath, bufferHandler_in);
+        _bufferHandler = bufferHandler_in;
     }
     //Properties:
     public int particleCount = 0;
     private ComputeShader _positionUpdater;
     private ComputeShader _velocityUpdater;
+    private BufferHandler _bufferHandler;
 
     //Methods:
     public void Simulate(float deltaTime)
     {
         //Update velocities:
-        GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
-        _velocityUpdater.Use();
-        _velocityUpdater.SetFloat("deltaTime", deltaTime);
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, _velocityUpdater.buffers["positionsCurrent"]);
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, _velocityUpdater.buffers["velocities"]);
-        _velocityUpdater.Dispatch(particleCount * (particleCount - 1) / 2, 1, 1);
+        // GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
+        // _velocityUpdater.SetFloat("deltaTime", deltaTime);
+        // _velocityUpdater.Dispatch1D(particleCount * (particleCount - 1) / 2);
 
         //Update positions:
         GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
-        _positionUpdater.Use();
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, _velocityUpdater.buffers["positionsCurrent"]);
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, _positionUpdater.buffers["positionsFuture"]);
-        GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 2, _positionUpdater.buffers["velocities"]);
         _positionUpdater.SetFloat("deltaTime", deltaTime);
-        _positionUpdater.Dispatch(particleCount, 1, 1);
+        _positionUpdater.Dispatch1D(particleCount);
     }
+    public void InitializeShaders()
+    {
+        _positionUpdater.bufferLocations.Add(0, Buffer.positionsCurrent);
+        _positionUpdater.bufferLocations.Add(1, Buffer.positionsFuture);
+        _positionUpdater.bufferLocations.Add(2, Buffer.velocitiesCurrent);
 
+        _velocityUpdater.bufferLocations.Add(0, Buffer.positionsCurrent);
+        _velocityUpdater.bufferLocations.Add(1, Buffer.velocitiesCurrent);
+        _velocityUpdater.bufferLocations.Add(2, Buffer.velocitiesCurrent);
+    }
     //Generates cube of dimensions^3 particles.
     public float[] GeneratePositions(int dimensions)
     {
@@ -77,7 +84,7 @@ class ParticleModel
                 {
                     currentIndex = 3 * (i + dimensions * j + dimensions * dimensions * k);
                     //Uncomment/write below if a certain initial velocity is wanted.
-                    // velocities[currentIndex] = 1.1f;
+                    velocities[currentIndex] = 1.1f;
                 }
             }
         }
@@ -108,20 +115,39 @@ class ParticleModel
         }
         return colors;
     }
-    public void InitializeBuffers(int positionsCurrent, int positionsFuture, float[] velocities)
-    {
-        //Initializebuffer for positionUpdater:
-        _positionUpdater.ShareBuffer("positionsCurrent", positionsCurrent, 0);
-        _positionUpdater.ShareBuffer("positionsFuture", positionsFuture, 1);
-        _positionUpdater.CreateStorageBuffer("velocities", velocities, 2, BufferUsageHint.StreamDraw);
 
-        //And now for velocityUpdater:
-        _velocityUpdater.ShareBuffer("positionsCurrent", positionsCurrent, 0);
-        _velocityUpdater.ShareBuffer("velocities", _positionUpdater.buffers["velocities"], 1);
-    }
-    public void SwapPositionBuffers()
+    // public void SwapPositionBuffers()
+    // {
+    //     _positionUpdater.SwapBuffers("positionsCurrent", "positionsFuture");
+    //     _velocityUpdater.UpdateBuffer("positionsCurrent", _positionUpdater.buffers["positionsCurrent"], 0);
+    // }
+    // BufferHandler interface:
+    public void CreateVertexBuffer(Buffer buffer, float[] data, BufferUsageHint hint)
     {
-        _positionUpdater.SwapPositionBuffers();
-        _velocityUpdater.UpdateBuffer("positionsCurrent", _positionUpdater.buffers["positionsCurrent"], 0);
+        _bufferHandler.CreateVertexBuffer(buffer, data, hint);
     }
+
+    public void CreateStorageBuffer(Buffer buffer, float[] data, BufferUsageHint hint)
+    {
+        _bufferHandler.CreateStorageBuffer(buffer, data, hint);
+    }
+    public void SwapBuffers(Buffer buffer1, Buffer buffer2)
+    {
+        _bufferHandler.SwapBuffers(buffer1, buffer2);
+    }
+    public int GetBufferHandle(Buffer buffer)
+    {
+        return _bufferHandler.GetBufferHandle(buffer);
+    }
+    public void AddBuffer(Buffer buffer, int bufferInt)
+    {
+        _bufferHandler.AddBuffer(buffer, bufferInt);
+    }
+    public void RemoveBuffer(Buffer buffer)
+    {
+        _bufferHandler.RemoveBuffer(buffer);
+    }
+
+
+
 }

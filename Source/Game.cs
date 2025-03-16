@@ -12,7 +12,7 @@ public class Game : GameWindow
     : base(GameWindowSettings.Default, new NativeWindowSettings() { ClientSize = (width, height), Title = title })
     { }
     //Properties:
-    private Renderer.GameEngine _gameEngine;
+    private GameEngine.Renderer _Renderer;
     private Stopwatch _timer;
     private bool _firstMouse = true;
     private Vector2 _prevMousePos;
@@ -26,33 +26,22 @@ public class Game : GameWindow
         CursorState = CursorState.Grabbed;
         _timer = new Stopwatch();
         _timer.Start();
-        _gameEngine = new Renderer.GameEngine(Size.X, Size.Y);
+        _Renderer = new GameEngine.Renderer(Size.X, Size.Y);
     }
     protected override void OnRenderFrame(FrameEventArgs args)
     {
         base.OnRenderFrame(args);
 
-        //Need to clear colorbuffer every render.
         GL.Clear(ClearBufferMask.ColorBufferBit);
-
         float deltaTime = (float)args.Time;
-
-        if (_gameEngine.isSimulating)
-        {
-            _model.Simulate(deltaTime);
-        }
-
-        //Update camera to current view and start rendering
-        _shader.Render(_model.particleCount, _camera);
-
-        //Swap render and simulation buffers
-        SwapBuffers();
-        _shader.SwapPositionBuffers();
-        _model.SwapPositionBuffers();
+        _Renderer.Render(deltaTime);
 
         //Update framerate:
         _avgFrameRate = (_avgFrameRate * _frameCount + deltaTime) / (_frameCount + 1);
         _frameCount += 1;
+
+        //Need to swap GLFW window buffers:
+        SwapBuffers();
     }
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
@@ -69,43 +58,42 @@ public class Game : GameWindow
         KeyboardState input = KeyboardState;
 
         if (input.IsKeyDown(Keys.Escape)) { Close(); }
-
         //Movement keys:
         if (input.IsKeyDown(Keys.W))
         {
-            _gameEngine.ChangePosition(Direction.front, Globals.MOVSPEED * deltaTime);
+            _Renderer.ChangePosition(GameEngine.Direction.front, Globals.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.S))
         {
-            _gameEngine.ChangePosition(Direction.front, -Globals.MOVSPEED * deltaTime);
+            _Renderer.ChangePosition(GameEngine.Direction.front, -Globals.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.A))
         {
-            _gameEngine.ChangePosition(Direction.right, -Globals.MOVSPEED * deltaTime);
+            _Renderer.ChangePosition(GameEngine.Direction.right, -Globals.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.D))
         {
-            _gameEngine.ChangePosition(Direction.right, Globals.MOVSPEED * deltaTime);
+            _Renderer.ChangePosition(GameEngine.Direction.right, Globals.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.LeftControl))
         {
-            _gameEngine.ChangePosition(Direction.up, -Globals.MOVSPEED * deltaTime);
+            _Renderer.ChangePosition(GameEngine.Direction.up, -Globals.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.LeftShift))
         {
-            _gameEngine.ChangePosition(Direction.up, Globals.MOVSPEED * deltaTime);
+            _Renderer.ChangePosition(GameEngine.Direction.up, Globals.MOVSPEED * deltaTime);
         }
 
         //Start/stop simulation and show framerate:
         if (input.IsKeyPressed(Keys.Space))
         {
-            if (_gameEngine.isSimulating)
+            if (_Renderer.isSimulating)
             {
                 Console.WriteLine("Framerate was: " + _avgFrameRate);
                 _avgFrameRate = 0;
                 _frameCount = 0;
             }
-            _gameEngine.isSimulating = !_gameEngine.isSimulating;
+            _Renderer.isSimulating = !_Renderer.isSimulating;
         }
     }
     private void MouseInputHandler()
@@ -119,7 +107,7 @@ public class Game : GameWindow
         {
             var deltaVec = new Vector2(MouseState.X - _prevMousePos.X, MouseState.Y - _prevMousePos.Y);
             _prevMousePos = MouseState.Position;
-            _gameEngine.ChangeOrientation(deltaVec);
+            _Renderer.ChangeOrientation(deltaVec);
         }
     }
 
@@ -128,11 +116,11 @@ public class Game : GameWindow
         base.OnFramebufferResize(e);
 
         GL.Viewport(0, 0, e.Width, e.Height);
-        _gameEngine.UpdateAspect(e.Width, e.Height);
+        _Renderer.UpdateAspect(e.Width, e.Height);
     }
     protected override void OnUnload()
     {//TODO: implement dispose for _model.
         base.OnUnload();
-        _gameEngine.Dispose();
+        _Renderer.Dispose();
     }
 }

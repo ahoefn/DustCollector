@@ -32,13 +32,14 @@ public class GeometryShader : Shader
         //Now create uniform dictionary:
         UpdateUniforms();
 
-        vertexArrays = new Dictionary<string, int>();
+        _vertexArray = GL.GenVertexArray();
     }
     //Data:
-    public Dictionary<string, int> vertexArrays;
+    // public Dictionary<string, int> vertexArrays;
+    private readonly int _vertexArray;
 
     //Methods:
-    public void Render(int particleCount, Camera camera, int vertexArray)
+    public void Render(int particleCount, Camera camera)
     {
         Use();
 
@@ -48,14 +49,14 @@ public class GeometryShader : Shader
         SetMatrix4("projection", camera.projection);
 
         //Draw:
-        GL.BindVertexArray(vertexArray);
+        GL.BindVertexArray(_vertexArray);
         GL.DrawArrays(PrimitiveType.Points, 0, particleCount);
     }
-    public void BindBufferToArray(string buffer, string array, int location, int stride)
+    public void BindBufferToArray(Buffer buffer, int location, int stride)
     {
         Use();
-        GL.BindBuffer(BufferTarget.ArrayBuffer, buffers[buffer]);
-        GL.BindVertexArray(vertexArrays[array]);
+        GL.BindBuffer(BufferTarget.ArrayBuffer, GetBufferHandle(buffer));
+        GL.BindVertexArray(_vertexArray);
         GL.VertexAttribPointer(
             location,
             stride,
@@ -66,9 +67,24 @@ public class GeometryShader : Shader
         );
         GL.EnableVertexAttribArray(location);
     }
-    public void CreateVertexArray(string name)
-    {
-        int vertexArrayObject = GL.GenVertexArray();
-        vertexArrays.Add(name, vertexArrayObject);
-    }
+    // public void BindBufferToArray(Buffer buffer, string array, int location, int stride)
+    // {
+    //     Use();
+    //     GL.BindBuffer(BufferTarget.ArrayBuffer, GetBufferHandle(buffer));
+    //     GL.BindVertexArray(vertexArrays[array]);
+    //     GL.VertexAttribPointer(
+    //         location,
+    //         stride,
+    //         VertexAttribPointerType.Float,
+    //         false,
+    //         stride * sizeof(float),
+    //         0
+    //     );
+    //     GL.EnableVertexAttribArray(location);
+    // }
+    // public void CreateVertexArray(string name)
+    // {
+    //     int vertexArrayObject = GL.GenVertexArray();
+    //     vertexArrays.Add(name, vertexArrayObject);
+    // }
 }

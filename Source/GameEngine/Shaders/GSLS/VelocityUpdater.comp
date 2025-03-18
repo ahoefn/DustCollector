@@ -27,17 +27,16 @@ const int MAXVELOCITY = 3;
 void main()
 {
     // Get correct index:
-    uint id = uint(dot(gl_WorkGroupID, vec3(1,1,1))) + gl_GlobalInvocationID.x;
+    uint id = uint(64 * dot(gl_WorkGroupID, vec3(1,1,1))) + gl_LocalInvocationID.x + 64 * offSetX;
     uint dir = gl_GlobalInvocationID.y;
-    uint index = 3 * (id + 64 * offSetX) + dir;
+    uint index = 3 * id + dir;
 
-    float test=deltaTime;
     // Update positions, TODO: use parralell reduction:
-    float velocityTemp = 0; 
+    float velocityTemp = velocitiesCurrent.v[index]; 
     for(int i = 0; i < PARTICLECOUNT-1; i++)
     {
-        // velocityTemp += deltaTime * forces.F[3*PARTICLECOUNT*index + 3*i] + float(i > index);
-        velocityTemp += 1; 
+        velocityTemp += deltaTime * forces.F[3*PARTICLECOUNT * id + dir + int(i >= index)];
+        // velocityTemp += 1; 
     }
     velocitiesFuture.v[index] = velocityTemp;
 }

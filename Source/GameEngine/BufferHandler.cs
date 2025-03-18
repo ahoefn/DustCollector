@@ -71,4 +71,11 @@ public class BufferHandler : IBufferHandler
     {
         _buffers.Remove(bufferName);
     }
+    public float[] GetBufferData(Buffer buffer, int size)
+    {
+        float[] output = new float[size];
+        GL.BindBuffer(BufferTarget.ShaderStorageBuffer, _buffers[buffer]);
+        GL.GetBufferSubData(BufferTarget.ShaderStorageBuffer, 0, size * sizeof(float), output);
+        return output;
+    }
 }

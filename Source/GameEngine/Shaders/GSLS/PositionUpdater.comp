@@ -29,9 +29,9 @@ const int MAXVELOCITY = 3;
 void main()
 {
     // Get correct index:
-    uint id = uint(dot(gl_WorkGroupID, vec3(1, 1, 1))) + gl_GlobalInvocationID.x;
+    uint id = uint(64 * dot(gl_WorkGroupID, vec3(1,1,1))) + gl_LocalInvocationID.x + 64 * offSetX;
     uint dir = gl_GlobalInvocationID.y;
-    uint index = 3 * (id + 64 * offSetX) + dir;
+    uint index = 3 * id + dir;
 
     // Put bounds on allowed position displacements. 
     velocities.v[index] = min(velocities.v[index], MAXVELOCITY);

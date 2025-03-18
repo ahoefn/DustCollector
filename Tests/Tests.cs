@@ -32,6 +32,7 @@ class TestProgram
         int program = GL.CreateProgram();
         var testParams = new TestParams(window, program);
 
-        GravityTester.FourParticles(testParams);
+        PositionTester.TwoParticles(testParams);
+        VelocityTester.TwoParticles(testParams);
     }
 }

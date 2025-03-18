@@ -10,6 +10,9 @@ public static class Globals
     public const int WORKGROUPSIZE_X = 65535;
     public const int WORKGROUPSIZE_Y = 65535;
     public const int WORKGROUPSIZE_Z = 65535;
+
+    // Shader constants:
+    public const int LOCALS_SIZE_X = 64;
 }
 
 //Global paths:

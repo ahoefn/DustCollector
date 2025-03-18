@@ -41,14 +41,15 @@ public class ComputeShader : Shader
     {
         Use();
         SetupBuffers();
-        if (count < Globals.WORKGROUPSIZE_X)
+        int count64 = (int)Math.Ceiling((float)count / 64);
+        if (count64 < Globals.WORKGROUPSIZE_X)
         {
             SetInt("offSetX", 0);
-            GL.DispatchCompute(count, 1, 1);
+            GL.DispatchCompute(count64, 1, 1);
             return;
         }
-        int remainder = count % Globals.WORKGROUPSIZE_X;
-        int yCount = (count - remainder) / Globals.WORKGROUPSIZE_X;
+        int remainder = count64 % Globals.WORKGROUPSIZE_X;
+        int yCount = (count64 - remainder) / Globals.WORKGROUPSIZE_X;
 
         SetInt("offSetX", 0);
         GL.DispatchCompute(Globals.WORKGROUPSIZE_X, yCount, 1);
@@ -57,6 +58,7 @@ public class ComputeShader : Shader
         GL.DispatchCompute(remainder, 1, 1);
 
     }
+    //TODO: impelment 64 division.
     public void Dispatch(int x_in, int y_in, int z_in)
     {// If a dispatch workgroup is too big (>Globals.WORKGROUPSIZE_X), separates the different dispatches in batches. 
         Use();
@@ -85,6 +87,7 @@ public class ComputeShader : Shader
         GL.DispatchCompute(currentCount.x, currentCount.y, currentCount.z);
     }
 
+    // TODO: impelment 64 division.
     public void Dispatch3D(int x_in, int y_in, int z_in)
     {// Same as dispatch, but for all three dimensions 
      // NOTE: requires that offSetX, offSetY and offSetZ are ALL used explicitly in the shader code, otherwise the compiler removes them and trying to set them will give an error.

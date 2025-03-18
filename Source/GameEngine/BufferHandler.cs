@@ -31,7 +31,7 @@ public class BufferHandler : IBufferHandler
         _buffers = new Dictionary<Buffer, int>();
     }
     private readonly Dictionary<Buffer, int> _buffers;
-    public void CreateVertexBuffer(Buffer name, float[] data, BufferUsageHint hint)
+    public void CreateVertexBuffer(Buffer buffer, float[] data, BufferUsageHint hint)
     {
         int vertexBufferObject = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferObject);
@@ -41,9 +41,9 @@ public class BufferHandler : IBufferHandler
                     data,
                     hint
         );
-        _buffers.Add(name, vertexBufferObject);
+        _buffers.Add(buffer, vertexBufferObject);
     }
-    public void CreateStorageBuffer(Buffer name, float[] data, BufferUsageHint hint)
+    public void CreateStorageBuffer(Buffer buffer, float[] data, BufferUsageHint hint)
     {
         int vertexBufferObject = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ShaderStorageBuffer, vertexBufferObject);
@@ -53,7 +53,7 @@ public class BufferHandler : IBufferHandler
                     data,
                     hint
         );
-        _buffers.Add(name, vertexBufferObject);
+        _buffers.Add(buffer, vertexBufferObject);
     }
     public void SwapBuffers(Buffer buffer1, Buffer buffer2)
     {

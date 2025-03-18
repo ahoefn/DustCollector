@@ -1,6 +1,10 @@
-#version 450 core
+// Updates positions using currentPosition and currentVelocity buffers, works in local sizes 64x3 so the 
+// function starts with converting the openGL indexes to actual array indices.
 
+#version 450 core
 layout(local_size_x=64, local_size_y=3, local_size_z=1) in;
+
+// Input Buffers:
 layout(std430,binding=0)  buffer positionsBufferCurrent
 {
     float pos[];
@@ -13,16 +17,24 @@ layout(std430,binding=2)  buffer velocityBuffer
 {
     float v[];
 } velocities;
+
+// Uniforms and consts:
 uniform float deltaTime;
 uniform int offSetX;
+const int MAXVELOCITY = 3;
 
-const int MAXVELOCITY =3;
-
+// Updating code:
 void main()
 {
-    uint index=gl_GlobalInvocationID.x+3*64*offSetX;
-    velocities.v[index]=min(velocities.v[index],MAXVELOCITY);
-    velocities.v[index]=max(velocities.v[index],-MAXVELOCITY);
+    // Get correct index:
+    uint id = uint(dot(gl_WorkGroupID, vec3(1, 1, 1))) + gl_GlobalInvocationID.x;
+    uint dir = gl_GlobalInvocationID.y;
+    uint index = 3 * (id + 64 * offSetX) + dir;
 
+    // Put bounds on allowed position displacements. 
+    velocities.v[index] = min(velocities.v[index], MAXVELOCITY);
+    velocities.v[index] = max(velocities.v[index], -MAXVELOCITY);
+
+    //Update positions:
     positionsFuture.pos[index] = positionsCurrent.pos[index] + deltaTime*velocities.v[index];
 }

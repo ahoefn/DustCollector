@@ -49,8 +49,8 @@ class ParticleModel : IBufferHandler
         {
             Console.WriteLine("dimensions does not match particleCount\n");
         }
-
-        var particles = new float[3 * particleCount];
+        int arraySize = Globals.LOCALS_SIZE_X * (int)Math.Ceiling((float)particleCount / Globals.LOCALS_SIZE_X);
+        var particles = new float[3 * arraySize];
         for (int i = 0; i < dimensions; i++)
         {
             for (int j = 0; j < dimensions; j++)
@@ -74,7 +74,9 @@ class ParticleModel : IBufferHandler
         {
             Console.WriteLine("dimensions does not match particleCount\n");
         }
-        var velocities = new float[3 * particleCount];
+
+        int arraySize = Globals.LOCALS_SIZE_X * (int)Math.Ceiling((float)particleCount / Globals.LOCALS_SIZE_X);
+        var velocities = new float[3 * arraySize];
         int currentIndex;
         for (int i = 0; i < dimensions; i++)
         {

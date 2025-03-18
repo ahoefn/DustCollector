@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 namespace DustCollector.GameEngine.Shaders;
 public class Shader : IDisposable, IBufferHandler
 {
-    public Shader(BufferTarget bufferTarget_in, BufferHandler bufferHandler_in)
+    public Shader(BufferHandler bufferHandler_in)
     {
         _uniformlocations = new Dictionary<string, int>();
         _bufferHandler = bufferHandler_in;
@@ -32,7 +32,23 @@ public class Shader : IDisposable, IBufferHandler
         }
         return shaderHandle;
     }
+    public static int CompileShader(string path, string preAmble, ShaderType type)
+    {
+        //Compile:
+        string shaderSource = "#version 450 core\n" + preAmble + File.ReadAllText(path);
+        int shaderHandle = GL.CreateShader(type);
+        GL.ShaderSource(shaderHandle, shaderSource);
+        GL.CompileShader(shaderHandle);
 
+        //Check succes:
+        GL.GetShader(shaderHandle, ShaderParameter.CompileStatus, out int succes);
+        if (succes == 0)
+        {
+            string infoLog = GL.GetShaderInfoLog(shaderHandle);
+            throw new ArgumentException("Could not compile shader, possibly due to invalid path. InfoLog: " + infoLog, nameof(path));
+        }
+        return shaderHandle;
+    }
     public void UpdateUniforms()
     {
         Use();

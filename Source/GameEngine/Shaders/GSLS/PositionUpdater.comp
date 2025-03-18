@@ -25,7 +25,7 @@ uniform float deltaTime;
 uniform int offSetX;
 const int MAXVELOCITY = 3;
 
-// Updating code:
+// Code:
 void main()
 {
     // Get correct index:

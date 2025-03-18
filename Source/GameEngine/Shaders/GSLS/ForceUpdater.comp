@@ -6,17 +6,18 @@ layout(std430,binding=0)  buffer positionsBuffer
     float pos[];
 } positions;
 
-layout(std430,binding=2)  buffer forcesBufferFuture 
+layout(std430,binding=1)  buffer forcesBufferFuture 
 {
     float F[];
 } forcesFuture;
-uniform float deltaTime;
+
+// Uniforms:
 uniform int offSetX;
 uniform int particleCount;
 
 void main()
 {    
-    uint id = uint(dot(gl_WorkGroupID, vec3(1,1,1))) + gl_GlobalInvocationID.x;
+    uint id = uint(dot(gl_WorkGroupID, vec3(1,1,1))) + gl_GlobalInvocationID.x + offSetX;
 
     // Must convert id to 2x2 matrix index using some index magic: 
     uint id_in = uint((sqrt(1 + 8 * id) - 1) / 2);
@@ -31,15 +32,15 @@ void main()
     // Calculate force based on distance between particles.
     vec3 pos_dif = pos_out - pos_in;
     float difDot = dot(pos_dif, pos_dif);
-    vec3 forceVec = -0.01f * deltaTime /(difDot * sqrt(difDot)) * pos_dif;
+    vec3 forceVec = 100.0  /(difDot * sqrt(difDot)) * pos_dif;
+    // // Write to forcebuffer.
+    forcesFuture.F[index_out + 3 * particleCount * index_in] = forceVec.x;
+    forcesFuture.F[index_out + 3 * particleCount * index_in + 1] = forceVec.y;
+    forcesFuture.F[index_out + 3 * particleCount * index_in + 2] = forceVec.z;
+ 
 
-    // Write to forcebuffer.
-    forcesFuture.F[index_in + particleCount * index_out] = forceVec.x;
-    forcesFuture.F[index_in + particleCount * index_out + 1] = forceVec.y;
-    forcesFuture.F[index_in + particleCount * index_out + 2] = forceVec.z;
-
-    // As the force matrix is antisymmetric, we can also write to the other particle:
-    forcesFuture.F[index_out + particleCount * index_in] = -forceVec.x;
-    forcesFuture.F[index_out + particleCount * index_in + 1] = -forceVec.y;
-    forcesFuture.F[index_out + particleCount * index_in + 2] = -forceVec.z;
+    // // As the force matrix is antisymmetric, we can also write to the other particle:
+    forcesFuture.F[index_in + 3 * particleCount * index_out] = -forceVec.x;
+    forcesFuture.F[index_in + 3 * particleCount * index_out + 1] = -forceVec.y;
+    forcesFuture.F[index_in + 3 * particleCount * index_out + 2] = -forceVec.z;
 }

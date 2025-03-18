@@ -4,10 +4,35 @@ namespace DustCollector.GameEngine.Shaders;
 public class ComputeShader : Shader
 {
     public ComputeShader(string computePath, BufferHandler bufferHandler)
-    : base(BufferTarget.ShaderStorageBuffer, bufferHandler)
+    : base(bufferHandler)
     {
         //Compile shader and attach to program:
         int computeShader = CompileShader(computePath, ShaderType.ComputeShader);
+        handle = GL.CreateProgram();
+        GL.AttachShader(handle, computeShader);
+        GL.LinkProgram(handle);
+
+        //Check succes:
+        GL.GetProgram(handle, GetProgramParameterName.LinkStatus, out int succes);
+        if (succes == 0)
+        {
+            string infoLog = GL.GetProgramInfoLog(handle);
+            throw new ArgumentException("Could not Create program for compute shader, check shader code. InfoLog: " + infoLog, nameof(computePath));
+        }
+
+        //Cleanup shader as it is not necessary anymore:
+        GL.DetachShader(handle, computeShader);
+        GL.DeleteShader(computeShader);
+
+        //Create uniform dictionary:
+        UpdateUniforms();
+        bufferLocations = new Dictionary<int, Buffer>();
+    }
+    public ComputeShader(string computePath, string preAmble, BufferHandler bufferHandler)
+    : base(bufferHandler)
+    {
+        //Compile shader and attach to program:
+        int computeShader = CompileShader(computePath, preAmble, ShaderType.ComputeShader);
         handle = GL.CreateProgram();
         GL.AttachShader(handle, computeShader);
         GL.LinkProgram(handle);

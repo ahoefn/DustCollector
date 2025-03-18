@@ -3,7 +3,7 @@ namespace DustCollector.GameEngine.Shaders;
 public class GeometryShader : Shader
 {
     public GeometryShader(string vertexPath, string fragmentPath, BufferHandler bufferHandler)
-    : base(BufferTarget.ArrayBuffer, bufferHandler)
+    : base(bufferHandler)
     {
         //Compile shaders and link to program:
         int vertexShader = CompileShader(vertexPath, ShaderType.VertexShader);
@@ -47,7 +47,6 @@ public class GeometryShader : Shader
         SetMatrix4("model", camera.model);
         SetMatrix4("view", camera.view);
         SetMatrix4("projection", camera.projection);
-
         //Draw:
         GL.BindVertexArray(_vertexArray);
         GL.DrawArrays(PrimitiveType.Points, 0, particleCount);

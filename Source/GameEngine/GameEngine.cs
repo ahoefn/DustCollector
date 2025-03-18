@@ -16,7 +16,9 @@ public class Renderer : ICamera, IDisposable
 
         _camera = new Camera(width, height);
         _bufferHandler = new BufferHandler();
-        _model = new ParticleModel(Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH, _bufferHandler);
+        dimensions = 3;
+        int particleCount = dimensions * dimensions * dimensions;
+        _model = new ParticleModel(particleCount, Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH, Paths.FORCEUPDATERPATH, _bufferHandler);
         _shader = new Shaders.GeometryShader(Paths.VERTEXPATH, Paths.FRAGMENTPATH, _bufferHandler);
 
         InitializeBuffers();
@@ -28,21 +30,26 @@ public class Renderer : ICamera, IDisposable
     private readonly BufferHandler _bufferHandler;
     private readonly Camera _camera;
     public bool isSimulating = false;
+    public readonly int dimensions;
     private void InitializeBuffers()
     {
         // Create initial data:
-        int dimensions = 3;
-        _model.particleCount = dimensions * dimensions * dimensions;
         float[] positions = _model.GeneratePositions(dimensions);
         float[] colors = _model.GenerateColors(dimensions);
         float[] velocities = _model.GenerateVelocities(dimensions);
+        float[] forces = _model.GenerateForces();
 
         // Create buffers:
         _bufferHandler.CreateStorageBuffer(Buffer.positionsCurrent, positions, BufferUsageHint.StreamDraw);
         _bufferHandler.CreateStorageBuffer(Buffer.positionsFuture, positions, BufferUsageHint.StreamDraw);
+
         _bufferHandler.CreateStorageBuffer(Buffer.velocitiesCurrent, velocities, BufferUsageHint.StreamDraw);
         _bufferHandler.CreateStorageBuffer(Buffer.velocitiesFuture, velocities, BufferUsageHint.StreamDraw);
-        _bufferHandler.CreateStorageBuffer(Buffer.Colors, colors, BufferUsageHint.StaticRead);
+
+        _bufferHandler.CreateStorageBuffer(Buffer.forcesCurrent, forces, BufferUsageHint.StreamDraw);
+        _bufferHandler.CreateStorageBuffer(Buffer.forcesFuture, forces, BufferUsageHint.StreamDraw);
+
+        _bufferHandler.CreateStorageBuffer(Buffer.colors, colors, BufferUsageHint.StaticRead);
     }
 
     private void InitializeShaders()
@@ -53,7 +60,7 @@ public class Renderer : ICamera, IDisposable
 
         // Create VertexArray:
         _shader.BindBufferToArray(Buffer.positionsCurrent, 0, 3);
-        _shader.BindBufferToArray(Buffer.Colors, 1, 3);
+        _shader.BindBufferToArray(Buffer.colors, 1, 3);
 
         // Compute shader:
         _model.InitializeShaders();
@@ -61,22 +68,22 @@ public class Renderer : ICamera, IDisposable
     //Render methods:
     public void Render(float deltaTime)
     {
+        GL.MemoryBarrier(MemoryBarrierFlags.AllBarrierBits);
         if (isSimulating)
         {
             _model.Simulate(deltaTime);
         }
-
         //Update camera to current view and start rendering
         _shader.Render(_model.particleCount, _camera);
 
         //Swap render and simulation buffers
         _bufferHandler.SwapBuffers(Buffer.positionsCurrent, Buffer.positionsFuture);
         _bufferHandler.SwapBuffers(Buffer.velocitiesCurrent, Buffer.velocitiesFuture);
-        // _bufferHandler.SwapBuffers(Buffer.ForcesCurrent, Buffer.ForcesFuture);
+        _bufferHandler.SwapBuffers(Buffer.forcesCurrent, Buffer.forcesFuture);
 
         // Need to rebind the buffers to the vertex Array after swapping:
         _shader.BindBufferToArray(Buffer.positionsCurrent, 0, 3);
-        _shader.BindBufferToArray(Buffer.Colors, 1, 3);
+        _shader.BindBufferToArray(Buffer.colors, 1, 3);
     }
 
 

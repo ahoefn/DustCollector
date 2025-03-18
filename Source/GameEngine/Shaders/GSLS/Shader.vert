@@ -18,7 +18,7 @@ void main()
     distmult=1/sqrt(length(MVvec));
     gl_Position = MVvec* projection;
     vertexColor=  colorIn;
-    float cameraDistance = length(gl_Position); 
+    float cameraDistance = length(MVvec.xyz); 
     gl_PointSize=POINTSIZE/(cameraDistance);
 }
 

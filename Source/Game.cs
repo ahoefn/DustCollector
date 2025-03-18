@@ -32,8 +32,8 @@ public class Game : GameWindow
     {
         base.OnRenderFrame(args);
 
-        GL.Clear(ClearBufferMask.ColorBufferBit);
         float deltaTime = (float)args.Time;
+
         _Renderer.Render(deltaTime);
 
         //Update framerate:
@@ -42,6 +42,7 @@ public class Game : GameWindow
 
         //Need to swap GLFW window buffers:
         SwapBuffers();
+        GL.Clear(ClearBufferMask.ColorBufferBit);
     }
     protected override void OnUpdateFrame(FrameEventArgs args)
     {

@@ -19,9 +19,9 @@ public enum Buffer
     positionsFuture,
     velocitiesCurrent,
     velocitiesFuture,
-    ForcesCurrent,
-    ForcesFuture,
-    Colors
+    forcesCurrent,
+    forcesFuture,
+    colors
 }
 
 public class BufferHandler : IBufferHandler

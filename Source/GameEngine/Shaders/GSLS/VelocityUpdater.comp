@@ -1,6 +1,5 @@
-// Updates velocities based on current forces.
+// Updates velocities based on current forces. Note: Needs to be compiled with "#define PARTICLECOUNT (number)".
 
-#version 450 core
 layout(local_size_x=64, local_size_y=3, local_size_z=1) in;
 
 // Input buffers:
@@ -22,7 +21,6 @@ layout(std430,binding=2)  buffer forcesBuffer
 // Uniforms and floats:
 uniform float deltaTime;
 uniform int offSetX;
-uniform int particleCount;
 const int MAXVELOCITY = 3;
 
 // Velocity updater:
@@ -33,11 +31,13 @@ void main()
     uint dir = gl_GlobalInvocationID.y;
     uint index = 3 * (id + 64 * offSetX) + dir;
 
+    float test=deltaTime;
     // Update positions, TODO: use parralell reduction:
-    float velocityTemp = velocitiesCurrent.v[index]; 
-    for(int i = 0; i < particleCount-1; i++)
+    float velocityTemp = 0; 
+    for(int i = 0; i < PARTICLECOUNT-1; i++)
     {
-        velocityTemp += forces.F[particleCount*index + i] + float(i > index);
+        // velocityTemp += deltaTime * forces.F[3*PARTICLECOUNT*index + 3*i] + float(i > index);
+        velocityTemp += 1; 
     }
     velocitiesFuture.v[index] = velocityTemp;
 }

@@ -20,6 +20,7 @@ public static class Paths
 {
     public const string VERTEXPATH = "GameEngine/Shaders/GSLS/Shader.vert";
     public const string FRAGMENTPATH = "GameEngine/Shaders/GSLS/Shader.frag";
-    public const string VELOCITYUPDATERPATH = "GameEngine/Shaders/GSLS/VelocityUpdater.comp";
     public const string POSITIONUPDATERPATH = "GameEngine/Shaders/GSLS/PositionUpdater.comp";
+    public const string VELOCITYUPDATERPATH = "GameEngine/Shaders/GSLS/VelocityUpdater.comp";
+    public const string FORCEUPDATERPATH = "GameEngine/Shaders/GSLS/ForceUpdater.comp";
 }

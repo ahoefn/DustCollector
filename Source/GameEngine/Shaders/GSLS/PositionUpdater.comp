@@ -9,10 +9,12 @@ layout(std430,binding=0)  buffer positionsBufferCurrent
 {
     float pos[];
 } positionsCurrent;
+
 layout(std430,binding=1)  buffer positionsBufferFuture
 {
     float pos[];
 } positionsFuture;
+
 layout(std430,binding=2)  buffer velocityBuffer
 {
     float v[];
@@ -35,6 +37,6 @@ void main()
     velocities.v[index] = min(velocities.v[index], MAXVELOCITY);
     velocities.v[index] = max(velocities.v[index], -MAXVELOCITY);
 
-    //Update positions:
+    // Update positions:
     positionsFuture.pos[index] = positionsCurrent.pos[index] + deltaTime*velocities.v[index];
 }

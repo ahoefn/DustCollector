@@ -22,6 +22,7 @@ layout(std430,binding=2)  buffer forcesBuffer
 // Uniforms and floats:
 uniform float deltaTime;
 uniform int offSetX;
+uniform int particleCount;
 const int MAXVELOCITY = 3;
 
 // Velocity updater:
@@ -31,7 +32,12 @@ void main()
     uint id = uint(dot(gl_WorkGroupID, vec3(1,1,1))) + gl_GlobalInvocationID.x;
     uint dir = gl_GlobalInvocationID.y;
     uint index = 3 * (id + 64 * offSetX) + dir;
-    
-    // Update positions:
-    velocitiesFuture.v[index] = velocitiesCurrent.v[index] + deltaTime*forces.F[index];
+
+    // Update positions, TODO: use parralell reduction:
+    float velocityTemp = velocitiesCurrent.v[index]; 
+    for(int i = 0; i < particleCount-1; i++)
+    {
+        velocityTemp += forces.F[particleCount*index + i] + float(i > index);
+    }
+    velocitiesFuture.v[index] = velocityTemp;
 }

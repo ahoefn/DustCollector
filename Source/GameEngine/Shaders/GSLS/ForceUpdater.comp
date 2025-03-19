@@ -15,34 +15,43 @@ layout(std430,binding=1)  buffer forcesBufferFuture
 uniform int offSetX;
 uniform int particleCount;
 
+uint GetForceIndex(uint column, uint row,uint dir);
+
 void main()
 {    
     uint id = uint(64*dot(gl_WorkGroupID, vec3(1,1,1))) + gl_LocalInvocationID.x + 64 * offSetX;
+    if (!(id < particleCount-1)) {return;}
 
     // Must convert id to 2x2 matrix index using some index magic: 
-    uint id_in = uint((sqrt(1 + 8 * id) - 1) / 2);
-    uint id_out = (id - id_in * (id_in + 1) / 2);
-    uint index_in = 3 * (id_in + 1);
-    uint index_out = 3 * id_out;
+    uint idRow = uint((sqrt(1 + 8 * id) - 1) / 2) + 1;
+    uint idColumn = id - idRow * (idRow - 1) / 2;
 
     // Get position vectors for input and output particles 
-    vec3 pos_in = vec3(positions.pos[index_in], positions.pos[index_in + 1], positions.pos[index_in + 2]);
-    vec3 pos_out = vec3(positions.pos[index_out], positions.pos[index_out + 1], positions.pos[index_out + 2]);
+    uint indexRow = 3 * idRow;
+    uint indexColumn = 3 * idColumn;
+    vec3 posRow = vec3(positions.pos[indexRow], positions.pos[indexRow + 1], positions.pos[indexRow + 2]);
+    vec3 posColumn = vec3(positions.pos[indexColumn], positions.pos[indexColumn + 1], positions.pos[indexColumn + 2]);
 
     // Calculate force based on distance between particles.
-    vec3 pos_dif = pos_out - pos_in;
+    vec3 pos_dif = posColumn - posRow;
     float difDot = dot(pos_dif, pos_dif);
-    vec3 forceVec = 1  /(difDot * sqrt(difDot)) * pos_dif;
+    vec3 forceVec = -pos_dif  /(difDot * sqrt(difDot));
 
     // Write to forcebuffer.
-    forcesFuture.F[index_out +  particleCount * index_in] = forceVec.x;
-    forcesFuture.F[index_out +  particleCount * index_in + 1] = forceVec.y;
-    forcesFuture.F[index_out +  particleCount * index_in + 2] = forceVec.z;
+    forcesFuture.F[GetForceIndex(idRow-1,idColumn,0)] = forceVec.x;
+    forcesFuture.F[GetForceIndex(idRow-1,idColumn,1)] = forceVec.y;
+    forcesFuture.F[GetForceIndex(idRow-1,idColumn,2)] = forceVec.z;
  
     // As the force matrix is antisymmetric, we can also write to the other particle:
-    forcesFuture.F[index_in +  particleCount * index_out] = -forceVec.x;
-    forcesFuture.F[index_in +  particleCount * index_out + 1] = -forceVec.y;
-    forcesFuture.F[index_in +  particleCount * index_out + 2] = -forceVec.z;
-    forcesFuture.F[index_in] = index_in;
-    forces.Future.F[]
+    forcesFuture.F[GetForceIndex(idColumn,idRow,0)] = -forceVec.x;
+    forcesFuture.F[GetForceIndex(idColumn,idRow,1)] = -forceVec.y;
+    forcesFuture.F[GetForceIndex(idColumn,idRow,2)] = -forceVec.z;
+} 
+
+
+uint GetForceIndex(uint idRow, uint idColumn, uint dir)
+{
+    uint rowStart = 3 * (particleCount - 1) * idColumn;
+    uint rowIndex = (particleCount - 1) * dir + idRow;
+    return rowStart + rowIndex;
 }

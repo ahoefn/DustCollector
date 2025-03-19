@@ -16,6 +16,7 @@ public struct TestParams
     }
     public readonly GameWindow window;
     public readonly int program;
+    public int? N;
 }
 
 //Main program:
@@ -31,8 +32,14 @@ class TestProgram
         var window = new GameWindow(new GameWindowSettings(), windowSettings);
         int program = GL.CreateProgram();
         var testParams = new TestParams(window, program);
+        testParams.N = 80;
 
         PositionTester.TwoParticles(testParams);
+
         VelocityTester.TwoParticles(testParams);
+        VelocityTester.FourParticles(testParams);
+        VelocityTester.NParticlesRand(testParams);
+
+        ForceTester.TwoParticles(testParams);
     }
 }

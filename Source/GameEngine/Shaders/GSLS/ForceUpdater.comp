@@ -32,7 +32,7 @@ void main()
     // Calculate force based on distance between particles.
     vec3 pos_dif = pos_out - pos_in;
     float difDot = dot(pos_dif, pos_dif);
-    vec3 forceVec = 100.0  /(difDot * sqrt(difDot)) * pos_dif;
+    vec3 forceVec = 1  /(difDot * sqrt(difDot)) * pos_dif;
 
     // Write to forcebuffer.
     forcesFuture.F[index_out +  particleCount * index_in] = forceVec.x;
@@ -43,5 +43,6 @@ void main()
     forcesFuture.F[index_in +  particleCount * index_out] = -forceVec.x;
     forcesFuture.F[index_in +  particleCount * index_out + 1] = -forceVec.y;
     forcesFuture.F[index_in +  particleCount * index_out + 2] = -forceVec.z;
-    forcesFuture.F[index_in] = 1;
+    forcesFuture.F[index_in] = index_in;
+    forces.Future.F[]
 }

@@ -1,5 +1,6 @@
 // Updates velocities based on current forces. Note: Needs to be compiled with "#define PARTICLECOUNT (number)".
-
+// #version 450 core
+// #define PARTICLECOUNT 3
 layout(local_size_x=64, local_size_y=3, local_size_z=1) in;
 
 // Input buffers:
@@ -33,9 +34,12 @@ void main()
 
     // Update positions, TODO: use parralell reduction:
     float velocityTemp = velocitiesCurrent.v[index]; 
-    for(int i = 0; i < PARTICLECOUNT-1; i++)
+    uint forceRowStart= 3*(PARTICLECOUNT-1)*id;
+    uint forceRowIndex = 0;
+    for(uint particle= 0; particle < PARTICLECOUNT-1; particle++)
     {
-        velocityTemp += deltaTime * forces.F[3*PARTICLECOUNT * id + dir + int(i >= index)];
+        forceRowIndex =  (PARTICLECOUNT-1) * dir + particle; 
+        velocityTemp += deltaTime * forces.F[forceRowStart+forceRowIndex];
         // velocityTemp += 1; 
     }
     velocitiesFuture.v[index] = velocityTemp;

@@ -14,8 +14,8 @@ public sealed class ForceTester
         var bufferHandler = new BufferHandler();
 
         int N = 2;
-        var velocityUpdater = new ComputeShader(Paths.FORCEUPDATERPATH, bufferHandler);
-        Assert.IsNotNull(velocityUpdater);
+        var forcesUpdater = new ComputeShader(Paths.FORCEUPDATERPATH, bufferHandler);
+        Assert.IsNotNull(forcesUpdater);
 
         //Initial positions and velocities:
         //                   |   P1  |    P2    |
@@ -32,13 +32,13 @@ public sealed class ForceTester
         bufferHandler.CreateStorageBuffer(GameEngine.Buffer.positionsCurrent, positions, BufferUsageHint.StreamDraw);
         bufferHandler.CreateStorageBuffer(GameEngine.Buffer.forcesFuture, forcesIn, BufferUsageHint.StreamDraw);
 
-        velocityUpdater.bufferLocations.Add(0, GameEngine.Buffer.positionsCurrent);
-        velocityUpdater.bufferLocations.Add(1, GameEngine.Buffer.forcesFuture);
+        forcesUpdater.bufferLocations.Add(0, GameEngine.Buffer.positionsCurrent);
+        forcesUpdater.bufferLocations.Add(1, GameEngine.Buffer.forcesFuture);
 
-        velocityUpdater.SetInt("offSetX", 0);
-        velocityUpdater.SetInt("particleCount", N);
+        forcesUpdater.SetInt("offSetX", 0);
+        forcesUpdater.SetInt("particleCount", N);
 
-        velocityUpdater.Dispatch1D(N * (N - 1) / 2);
+        forcesUpdater.Dispatch1D(N * (N - 1) / 2);
 
         //Check results:
         float[] forcesOut = bufferHandler.GetBufferData(GameEngine.Buffer.forcesFuture, 3 * N * (N - 1));
@@ -52,8 +52,8 @@ public sealed class ForceTester
         var bufferHandler = new BufferHandler();
 
         int N = 4;
-        var velocityUpdater = new ComputeShader(Paths.FORCEUPDATERPATH, bufferHandler);
-        Assert.IsNotNull(velocityUpdater);
+        var forcesUpdater = new ComputeShader(Paths.FORCEUPDATERPATH, bufferHandler);
+        Assert.IsNotNull(forcesUpdater);
 
         //Initial positions and velocities:
         //                   |   P1  |    P2  |    P3   |   P4     |
@@ -86,17 +86,77 @@ public sealed class ForceTester
         bufferHandler.CreateStorageBuffer(GameEngine.Buffer.positionsCurrent, positions, BufferUsageHint.StreamDraw);
         bufferHandler.CreateStorageBuffer(GameEngine.Buffer.forcesFuture, forcesIn, BufferUsageHint.StreamDraw);
 
-        velocityUpdater.bufferLocations.Add(0, GameEngine.Buffer.positionsCurrent);
-        velocityUpdater.bufferLocations.Add(1, GameEngine.Buffer.forcesFuture);
+        forcesUpdater.bufferLocations.Add(0, GameEngine.Buffer.positionsCurrent);
+        forcesUpdater.bufferLocations.Add(1, GameEngine.Buffer.forcesFuture);
 
-        velocityUpdater.SetInt("offSetX", 0);
-        velocityUpdater.SetInt("particleCount", N);
+        forcesUpdater.SetInt("offSetX", 0);
+        forcesUpdater.SetInt("particleCount", N);
 
-        velocityUpdater.Dispatch1D(N * (N - 1) / 2);
+        forcesUpdater.Dispatch1D(N * (N - 1) / 2);
 
         //Check results:
         float[] forcesOut = bufferHandler.GetBufferData(GameEngine.Buffer.forcesFuture, 3 * N * (N - 1));
         CollectionAssert.AreEqual(forcesOut, forcesOutGoal);
+    }
+    public static void NParticlesRand(TestParams testParams)
+    {
+        //Make sure GL context is correct and compile shader:
+        testParams.window.MakeCurrent();
+        GL.UseProgram(testParams.program);
+        var bufferHandler = new BufferHandler();
+
+        if (testParams.N == null) { throw new ArgumentException("N must not be null.", nameof(testParams.N)); }
+        int N = (int)testParams.N;
+        var forcesUpdater = new ComputeShader(Paths.FORCEUPDATERPATH, bufferHandler);
+        Assert.IsNotNull(forcesUpdater);
+
+        //Initial positions and velocities:
+        //                   |   P1  |    P2  |    P3   |   P4     |
+        float[] positions = new float[3 * N];
+        float[] forcesIn = new float[3 * N * (N - 1)];
+        float[] forcesOutGoal = new float[3 * N * (N - 1)];
+        var random = new Random();
+        for (int i = 0; i < N; i++)
+        {
+            positions[i] = random.NextSingle();
+        }
+
+        float force;
+        int rowIndex;
+        int dirIndex;
+        int columnIndex;
+        int particleColumnActual;
+        for (int particleRow = 0; particleRow < N; particleRow++)
+        {
+            rowIndex = 3 * particleRow * (N - 1);
+            for (int dir = 0; dir < 3; dir++)
+            {
+                dirIndex = (N - 1) * dir;
+                for (int particleColumn = 0; particleColumn < N - 1; particleColumn++)
+                {
+                    columnIndex = particleColumn;
+                    particleColumnActual = particleColumn + (particleColumn < particleRow ? 0 : 1);
+                    force = ForceCalculator(particleRow, particleColumnActual, dir, positions);
+                    forcesOutGoal[rowIndex + dirIndex + columnIndex] = force;
+                }
+            }
+        }
+
+        //Create shader buffers and run simulation:
+        bufferHandler.CreateStorageBuffer(GameEngine.Buffer.positionsCurrent, positions, BufferUsageHint.StreamDraw);
+        bufferHandler.CreateStorageBuffer(GameEngine.Buffer.forcesFuture, forcesIn, BufferUsageHint.StreamDraw);
+
+        forcesUpdater.bufferLocations.Add(0, GameEngine.Buffer.positionsCurrent);
+        forcesUpdater.bufferLocations.Add(1, GameEngine.Buffer.forcesFuture);
+
+        forcesUpdater.SetInt("offSetX", 0);
+        forcesUpdater.SetInt("particleCount", N);
+
+        forcesUpdater.Dispatch1D(N * (N - 1) / 2);
+
+        //Check results:
+        float[] forcesOut = bufferHandler.GetBufferData(GameEngine.Buffer.forcesFuture, 3 * N * (N - 1));
+        CollectionAssert.AreEqual(forcesOut, forcesOutGoal, new FloatComparer(0.001f));
     }
     public static float ForceCalculator(int particleIndex1, int particleIndex2, int dir, float[] positions)
     {

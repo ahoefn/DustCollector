@@ -42,5 +42,6 @@ class TestProgram
 
         ForceTester.TwoParticles(testParams);
         ForceTester.FourParticles(testParams);
+        ForceTester.NParticlesRand(testParams);
     }
 }

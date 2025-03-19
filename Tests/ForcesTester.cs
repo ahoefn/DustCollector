@@ -61,23 +61,26 @@ public sealed class ForceTester
         float[] forcesIn = new float[3 * N * (N - 1)];
         float[] forcesOutGoal = new float[3 * N * (N - 1)];
 
-        Vector3 force;
-        Vector3 positionOut;
-        Vector3 positionIn;
-        Vector3 distance;
-        for (int particleOut = 0; particleOut < N; particleOut++)
+        float force;
+        int rowIndex;
+        int dirIndex;
+        int columnIndex;
+        int particleColumnActual;
+        for (int particleRow = 0; particleRow < N; particleRow++)
         {
-            force = new Vector3(0, 0, 0);
-            positionOut = new Vector3(positions[3 * particleOut], positions[3 * particleOut + 1], positions[3 * particleOut + 2]);
-            for (int particleIn = 0; particleIn < N; particleIn++)
+            rowIndex = 3 * particleRow * (N - 1);
+            for (int dir = 0; dir < 3; dir++)
             {
-                positionOut = new Vector3(positions[3 * particleOut], positions[3 * particleOut + 1], positions[3 * particleOut + 2]);
-                distance = new Vector3(positions[3 * particleOut])
+                dirIndex = (N - 1) * dir;
+                for (int particleColumn = 0; particleColumn < N - 1; particleColumn++)
+                {
+                    columnIndex = particleColumn;
+                    particleColumnActual = particleColumn + (particleColumn < particleRow ? 0 : 1);
+                    force = ForceCalculator(particleRow, particleColumnActual, dir, positions);
+                    forcesOutGoal[rowIndex + dirIndex + columnIndex] = force;
+                }
             }
         }
-
-
-
 
         //Create shader buffers and run simulation:
         bufferHandler.CreateStorageBuffer(GameEngine.Buffer.positionsCurrent, positions, BufferUsageHint.StreamDraw);
@@ -94,5 +97,13 @@ public sealed class ForceTester
         //Check results:
         float[] forcesOut = bufferHandler.GetBufferData(GameEngine.Buffer.forcesFuture, 3 * N * (N - 1));
         CollectionAssert.AreEqual(forcesOut, forcesOutGoal);
+    }
+    public static float ForceCalculator(int particleIndex1, int particleIndex2, int dir, float[] positions)
+    {
+        Vector3 pos1 = new Vector3(positions[3 * particleIndex1], positions[3 * particleIndex1 + 1], positions[3 * particleIndex1 + 2]);
+        Vector3 pos2 = new Vector3(positions[3 * particleIndex2], positions[3 * particleIndex2 + 1], positions[3 * particleIndex2 + 2]);
+        Vector3 distance = pos2 - pos1;
+        Vector3 force = Vector3.Normalize(distance) / Vector3.Dot(distance, distance);
+        return force[dir];
     }
 }

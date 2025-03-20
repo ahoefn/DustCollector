@@ -13,13 +13,13 @@ class FloatComparer : IComparer
 
     public int Compare(object? x, object? y)
     {
-        if (!(x is float))
+        if (x is not float)
         {
-            throw new ArgumentException("x is of the wrong type, float expected but got " + x.GetType().ToString());
+            throw new ArgumentException("x is of the wrong type, float expected.", nameof(x));
         }
-        if (!(y is float))
+        if (y is not float)
         {
-            throw new ArgumentException("y is of the wrong type, float expected but got " + y.GetType().ToString());
+            throw new ArgumentException("y is of the wrong type, float expected.", nameof(y));
         }
 
         float f1 = (float)x;

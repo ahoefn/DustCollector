@@ -9,7 +9,11 @@ public class Game : GameWindow
 {
     public Game(int width, int height, string title)
     : base(GameWindowSettings.Default, new NativeWindowSettings() { ClientSize = (width, height), Title = title })
-    { }
+    {
+        _timer = new Stopwatch();
+        _timer.Start();
+        _Renderer = new GameEngine.Renderer(Size.X, Size.Y);
+    }
 
     // If Game is called with debug : true, enable OpenGL debugging:
     public Game(int width, int height, string title, bool debug)
@@ -23,6 +27,10 @@ public class Game : GameWindow
         GL.DebugMessageCallback(Debugger.DebugMessageDelegate, IntPtr.Zero);
         GL.Enable(EnableCap.DebugOutput);
         GL.Enable(EnableCap.DebugOutputSynchronous);
+
+        _timer = new Stopwatch();
+        _timer.Start();
+        _Renderer = new GameEngine.Renderer(Size.X, Size.Y);
     }
 
     // Properties:
@@ -39,9 +47,7 @@ public class Game : GameWindow
         base.OnLoad();
 
         CursorState = CursorState.Grabbed;
-        _timer = new Stopwatch();
-        _timer.Start();
-        _Renderer = new GameEngine.Renderer(Size.X, Size.Y);
+
     }
     protected override void OnRenderFrame(FrameEventArgs args)
     {

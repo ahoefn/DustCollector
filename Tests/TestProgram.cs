@@ -15,6 +15,8 @@ public struct TestParams
         program = program_in;
     }
     public readonly GameWindow window;
+    public GameEngine.BufferHandler bufferHandler;
+    public GameEngine.Shaders.ComputeShader shader;
     public readonly int program;
     public int? N;
 }
@@ -51,15 +53,4 @@ class TestProgram
         ForceTester.TotalForceTesterNpartRand(testParams);
     }
 
-    // Utility func useful in a variety of tests:
-    public static float[] GenerateRandomArray(int length)
-    {
-        var output = new float[length];
-        var random = new Random();
-        for (int i = 0; i < length; i++)
-        {
-            output[i] = random.NextSingle();
-        }
-        return output;
-    }
 }

@@ -14,6 +14,7 @@ public class Renderer : ICamera, IDisposable
         GL.Enable(EnableCap.Blend);
         GL.Enable(EnableCap.ProgramPointSize);
 
+        // Initializations:
         _camera = new Camera(width, height);
         _bufferHandler = new BufferHandler();
         dimensions = 10;

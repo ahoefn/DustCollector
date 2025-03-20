@@ -43,5 +43,17 @@ class TestProgram
         ForceTester.TwoParticles(testParams);
         ForceTester.FourParticles(testParams);
         ForceTester.NParticlesRand(testParams);
+        ForceTester.TotalForceTester(testParams);
+        ForceTester.TotalForceTesterNpartRand(testParams);
+    }
+    public static float[] GenerateRandomArray(int length)
+    {
+        var output = new float[length];
+        var random = new Random();
+        for (int i = 0; i < length; i++)
+        {
+            output[i] = random.NextSingle();
+        }
+        return output;
     }
 }

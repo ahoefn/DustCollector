@@ -17,7 +17,7 @@ public class Renderer : ICamera, IDisposable
         // Initializations:
         _camera = new Camera(width, height);
         _bufferHandler = new BufferHandler();
-        dimensions = 10;
+        dimensions = 16;
         int particleCount = dimensions * dimensions * dimensions;
         _model = new ParticleModel(particleCount, Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH, Paths.FORCEUPDATERPATH, _bufferHandler);
         _shader = new Shaders.GeometryShader(Paths.VERTEXPATH, Paths.FRAGMENTPATH, _bufferHandler);

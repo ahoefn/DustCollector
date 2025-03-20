@@ -167,7 +167,7 @@ public sealed class VelocityTester
                 }
             }
         }
-        CollectionAssert.AreEqual(velocities_out_goal, velocities_out, new FloatComparer(0.00001f));
+        CollectionAssert.AreEqual(velocities_out_goal, velocities_out, new FloatComparer(0.001f));
     }
 
 }

@@ -11,7 +11,20 @@ public class Game : GameWindow
     public Game(int width, int height, string title)
     : base(GameWindowSettings.Default, new NativeWindowSettings() { ClientSize = (width, height), Title = title })
     { }
-    //Properties:
+    public Game(int width, int height, string title, bool debug)
+   : base(GameWindowSettings.Default, new NativeWindowSettings()
+   {
+       ClientSize = (width, height),
+       Title = title,
+       Flags = ContextFlags.Debug
+   })
+    {
+        GL.DebugMessageCallback(Debugger.DebugMessageDelegate, IntPtr.Zero);
+        GL.Enable(EnableCap.DebugOutput);
+        GL.Enable(EnableCap.DebugOutputSynchronous);
+    }
+
+    // Properties:
     private GameEngine.Renderer _Renderer;
     private Stopwatch _timer;
     private bool _firstMouse = true;

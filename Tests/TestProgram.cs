@@ -32,7 +32,7 @@ class TestProgram
         var window = new GameWindow(new GameWindowSettings(), windowSettings);
         int program = GL.CreateProgram();
         var testParams = new TestParams(window, program);
-        testParams.N = 80;
+        testParams.N = 800;
 
         PositionTester.TwoParticles(testParams);
 

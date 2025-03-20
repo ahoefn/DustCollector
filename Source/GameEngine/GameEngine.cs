@@ -9,7 +9,7 @@ public class Renderer : ICamera, IDisposable
     {
         //Global GL Settings, should not be changed anywhere else.
         GL.PointSize(Globals.POINTSIZE);
-        GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        GL.ClearColor(0.02f, 0.01f, 0.10f, 1.0f);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         GL.Enable(EnableCap.Blend);
         GL.Enable(EnableCap.ProgramPointSize);

@@ -101,7 +101,7 @@ class ParticleModel : IDisposable
                 {
                     currentIndex = 3 * (i + dimensions * j + dimensions * dimensions * k);
                     // Uncomment/write below if a certain initial velocity is wanted.
-                    velocities[currentIndex] = 1.1f;
+                    // velocities[currentIndex] = 1.1f;
                 }
             }
         }
@@ -124,6 +124,8 @@ class ParticleModel : IDisposable
         {
             throw new ArgumentException("Dimensions does not match particleCount.", nameof(dimensions));
         }
+
+        float baseLight = 0.4f; // Determines the base luminosity.
         var colors = new float[3 * particleCount];
         int currentIndex;
         for (int i = 0; i < dimensions; i++)
@@ -133,9 +135,9 @@ class ParticleModel : IDisposable
                 for (int k = 0; k < dimensions; k++)
                 {
                     currentIndex = 3 * (i + dimensions * j + dimensions * dimensions * k);
-                    colors[currentIndex] = (float)i / dimensions;
-                    colors[currentIndex + 1] = (float)j / dimensions;
-                    colors[currentIndex + 2] = (float)(dimensions - i - j) / dimensions;
+                    colors[currentIndex] = baseLight + (1 - baseLight) * (float)i / dimensions;
+                    colors[currentIndex + 1] = baseLight + (1 - baseLight) * (float)j / dimensions;
+                    colors[currentIndex + 2] = baseLight + (1 - baseLight) * (float)(dimensions - i - j) / dimensions;
                 }
             }
         }

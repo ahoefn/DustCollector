@@ -135,7 +135,7 @@ public class Shader : IDisposable, IBufferHandler
     {
         if (!disposedValue)
         {
-            Console.WriteLine("GPU Resource leak. Did you forget to call Dispose()?");
+            Console.WriteLine("GPU Resource leak in shader. Did you forget to call Dispose()?");
         }
     }
 

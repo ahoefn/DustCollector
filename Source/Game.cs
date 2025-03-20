@@ -109,6 +109,12 @@ public class Game : GameWindow
             }
             _Renderer.isSimulating = !_Renderer.isSimulating;
         }
+
+        //Restart renderer on R:
+        if (input.IsKeyPressed(Keys.R))
+        {
+            RestartRenderer();
+        }
     }
     private void MouseInputHandler()
     {
@@ -136,5 +142,10 @@ public class Game : GameWindow
     {
         base.OnUnload();
         _Renderer.Dispose();
+    }
+    private void RestartRenderer()
+    {
+        _Renderer.Dispose();
+        _Renderer = new GameEngine.Renderer(Size.X, Size.Y);
     }
 }

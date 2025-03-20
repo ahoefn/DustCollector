@@ -3,7 +3,7 @@ using OpenTK.Graphics.OpenGL4;
 namespace DustCollector.GameEngine;
 
 
-class ParticleModel : IBufferHandler
+class ParticleModel : IBufferHandler, IDisposable
 {
     public ParticleModel(int particleCount_in, string positionPath, string velocityPath, string forcePath, BufferHandler bufferHandler_in)
     {
@@ -172,6 +172,13 @@ class ParticleModel : IBufferHandler
         _bufferHandler.RemoveBuffer(buffer);
     }
 
-
+    // IDisposable methods:
+    public void Dispose()
+    {
+        _forceUpdater.Dispose();
+        _positionUpdater.Dispose();
+        _velocityUpdater.Dispose();
+        GC.SuppressFinalize(this);
+    }
 
 }

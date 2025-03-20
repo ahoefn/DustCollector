@@ -2,7 +2,7 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 namespace DustCollector.GameEngine;
 
-interface IBufferHandler
+interface IBufferHandler : IDisposable
 {
     public void CreateVertexBuffer(Buffer buffer, float[] data, BufferUsageHint hint);
 
@@ -30,7 +30,11 @@ public class BufferHandler : IBufferHandler
     {
         _buffers = new Dictionary<Buffer, int>();
     }
+    // Properties:
     private readonly Dictionary<Buffer, int> _buffers;
+    private bool _disposedValue = false;
+
+    // Methods:
     public void CreateVertexBuffer(Buffer buffer, float[] data, BufferUsageHint hint)
     {
         int vertexBufferObject = GL.GenBuffer();
@@ -69,6 +73,7 @@ public class BufferHandler : IBufferHandler
     }
     public void RemoveBuffer(Buffer bufferName)
     {
+        GL.DeleteBuffer(_buffers[bufferName]);
         _buffers.Remove(bufferName);
     }
     public float[] GetBufferData(Buffer buffer, int size)
@@ -77,5 +82,31 @@ public class BufferHandler : IBufferHandler
         GL.BindBuffer(BufferTarget.ShaderStorageBuffer, _buffers[buffer]);
         GL.GetBufferSubData(BufferTarget.ShaderStorageBuffer, 0, size * sizeof(float), output);
         return output;
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
+        {
+            foreach ((Buffer buffer, int handle) in _buffers)
+            {
+                RemoveBuffer(buffer);
+            }
+            _disposedValue = true;
+        }
+    }
+
+    ~BufferHandler()
+    {
+        if (!_disposedValue)
+        {
+            Console.WriteLine("GPU Resource leak in buffer handler. Did you forget to call Dispose()?");
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }

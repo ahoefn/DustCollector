@@ -17,7 +17,7 @@ public class Renderer : ICamera, IDisposable
         // Initializations:
         _camera = new Camera(width, height);
         _bufferHandler = new BufferHandler();
-        dimensions = 16;
+        dimensions = 10;
         int particleCount = dimensions * dimensions * dimensions;
         _model = new ParticleModel(particleCount, Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH, Paths.FORCEUPDATERPATH, _bufferHandler);
         _shader = new Shaders.GeometryShader(Paths.VERTEXPATH, Paths.FRAGMENTPATH, _bufferHandler);
@@ -63,7 +63,7 @@ public class Renderer : ICamera, IDisposable
         _shader.BindBufferToArray(Buffer.positionsCurrent, 0, 3);
         _shader.BindBufferToArray(Buffer.colors, 1, 3);
 
-        // Compute shader:
+        // Compute shaders:
         _model.InitializeShaders();
     }
     //Render methods:
@@ -76,7 +76,7 @@ public class Renderer : ICamera, IDisposable
         //Update camera to current view and start rendering
         _shader.Render(_model.particleCount, _camera);
 
-        GL.MemoryBarrier(MemoryBarrierFlags.AllBarrierBits);
+        GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
         //Swap render and simulation buffers
         _bufferHandler.SwapBuffers(Buffer.positionsCurrent, Buffer.positionsFuture);
         _bufferHandler.SwapBuffers(Buffer.velocitiesCurrent, Buffer.velocitiesFuture);
@@ -105,5 +105,8 @@ public class Renderer : ICamera, IDisposable
     public void Dispose()
     {
         _shader.Dispose();
+        _model.Dispose();
+        _bufferHandler.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

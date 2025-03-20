@@ -8,6 +8,10 @@ In this repo is a simple particle simulator I have built / am building. Once ope
     R to restart the simulation,
     ESC to exit the window.
 
+#### Code structure
+
+
+
 #### Dependencies
 [OpenTK v4.9.3](https://www.nuget.org/packages/OpenTK/)
 

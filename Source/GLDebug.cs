@@ -1,4 +1,5 @@
-using System;
+// This file contains the debugging logic necessary for OpenGL.
+
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using OpenTK.Graphics.OpenGL4;

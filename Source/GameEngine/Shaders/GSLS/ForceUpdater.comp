@@ -1,6 +1,8 @@
 #version 450 core
 
 layout(local_size_x=64, local_size_y=1, local_size_z=1) in;
+
+// Buffers:
 layout(std430,binding=0)  buffer positionsBuffer
 {
     float pos[];
@@ -15,6 +17,7 @@ layout(std430,binding=1)  buffer forcesBufferFuture
 uniform int offSetX;
 uniform int particleCount;
 
+// Functions:
 uint GetForceIndex(uint row, uint column,uint dir);
 
 void main()
@@ -24,7 +27,8 @@ void main()
     // Probably better to implement this if with a #define constant to optimize.
     if (!(id < particleCount * (particleCount - 1) / 2)) {return;}
 
-    // Must convert id to 2x2 matrix index using some index magic: 
+    // Must convert id to N*(N-1)  matrix index using some index magic, 
+    // note that we only want the lower triangular part. 
     uint idRow= uint((sqrt(1 + 8 * id) - 1) / 2) + 1;
     uint idColumn = id - idRow * (idRow - 1) / 2;
 
@@ -37,7 +41,7 @@ void main()
     // Calculate force based on distance between particles.
     vec3 pos_dif = posRow - posColumn;
     float difDot = dot(pos_dif, pos_dif);
-    vec3 forceVec = -0.01f*pos_dif /(difDot * sqrt(difDot));
+    vec3 forceVec = -0.02f*pos_dif /(difDot * sqrt(difDot));
 
     // Write to forcebuffer.
     forcesFuture.F[GetForceIndex(idRow,idColumn,0)] = forceVec.x;
@@ -51,7 +55,8 @@ void main()
  
 } 
 
-
+// Gets index in F array, note that if column is not smaller than row, we need to offset by one
+// to get the correct index.
 uint GetForceIndex(uint row, uint column, uint dir)
 {
     uint rowStart = 3 * (particleCount - 1) * row;

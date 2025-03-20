@@ -1,9 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Windowing.GraphicsLibraryFramework;
+﻿namespace DustCollector;
 
-namespace DustCollector;
-
-//TODO: add explanation comments at top of each file.
 class Program
 {
     static void Main(string[] args)

@@ -17,24 +17,28 @@ public class Renderer : ICamera, IDisposable
         // Initializations:
         _camera = new Camera(width, height);
         _bufferHandler = new BufferHandler();
-        dimensions = 10;
+        dimensions = 10; // Change this number to render boxes of different sizes.
         int particleCount = dimensions * dimensions * dimensions;
-        _model = new ParticleModel(particleCount, Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH, Paths.FORCEUPDATERPATH, _bufferHandler);
+        _model = new ParticleModel(particleCount, Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH,
+                                    Paths.FORCEUPDATERPATH, _bufferHandler);
         _shader = new Shaders.GeometryShader(Paths.VERTEXPATH, Paths.FRAGMENTPATH, _bufferHandler);
 
         InitializeBuffers();
         InitializeShaders();
     }
 
+    // Properties:
     private readonly Shaders.GeometryShader _shader;
     private readonly ParticleModel _model;
     private readonly BufferHandler _bufferHandler;
     private readonly Camera _camera;
     public bool isSimulating = false;
     public readonly int dimensions;
+
+    // Methods: 
     private void InitializeBuffers()
     {
-        // Create initial data:
+        // Generate initial data:
         float[] positions = _model.GeneratePositions(dimensions);
         float[] colors = _model.GenerateColors(dimensions);
         float[] velocities = _model.GenerateVelocities(dimensions);

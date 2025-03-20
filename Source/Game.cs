@@ -4,13 +4,14 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Diagnostics;
-using System.IO;
 namespace DustCollector;
 public class Game : GameWindow
 {
     public Game(int width, int height, string title)
     : base(GameWindowSettings.Default, new NativeWindowSettings() { ClientSize = (width, height), Title = title })
     { }
+
+    // If Game is called with debug : true, enable OpenGL debugging:
     public Game(int width, int height, string title, bool debug)
    : base(GameWindowSettings.Default, new NativeWindowSettings()
    {
@@ -31,7 +32,8 @@ public class Game : GameWindow
     private Vector2 _prevMousePos;
     private float _frameCount = 0;
     private float _avgFrameRate = 0;
-    //Methods:
+
+    // Methods:
     protected override void OnLoad()
     {
         base.OnLoad();
@@ -46,7 +48,6 @@ public class Game : GameWindow
         base.OnRenderFrame(args);
 
         float deltaTime = (float)args.Time;
-
         _Renderer.Render(deltaTime);
 
         //Update framerate:
@@ -63,6 +64,7 @@ public class Game : GameWindow
 
         base.OnUpdateFrame(args);
 
+        // Handle inputs:
         float deltaTime = (float)args.Time;
         KeyboardInputHandler(deltaTime);
         MouseInputHandler();
@@ -72,6 +74,7 @@ public class Game : GameWindow
         KeyboardState input = KeyboardState;
 
         if (input.IsKeyDown(Keys.Escape)) { Close(); }
+
         //Movement keys:
         if (input.IsKeyDown(Keys.W))
         {
@@ -118,6 +121,7 @@ public class Game : GameWindow
     }
     private void MouseInputHandler()
     {
+        // Need to initialize mouse position:
         if (_firstMouse)
         {
             _prevMousePos = new Vector2(MouseState.X, MouseState.Y);

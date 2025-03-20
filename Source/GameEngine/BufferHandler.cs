@@ -1,8 +1,7 @@
 using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 namespace DustCollector.GameEngine;
 
-interface IBufferHandler : IDisposable
+public interface IBufferHandler : IDisposable
 {
     public void CreateVertexBuffer(Buffer buffer, float[] data, BufferUsageHint hint);
 
@@ -24,12 +23,14 @@ public enum Buffer
     colors
 }
 
+// This class allows us to do all the OpenGL buffer/memory handling in one place.
 public class BufferHandler : IBufferHandler
 {
     public BufferHandler()
     {
         _buffers = new Dictionary<Buffer, int>();
     }
+
     // Properties:
     private readonly Dictionary<Buffer, int> _buffers;
     private bool _disposedValue = false;
@@ -84,6 +85,7 @@ public class BufferHandler : IBufferHandler
         return output;
     }
 
+    // Dispose interface methods:
     protected virtual void Dispose(bool disposing)
     {
         if (!_disposedValue)
@@ -95,7 +97,6 @@ public class BufferHandler : IBufferHandler
             _disposedValue = true;
         }
     }
-
     ~BufferHandler()
     {
         if (!_disposedValue)
@@ -103,7 +104,6 @@ public class BufferHandler : IBufferHandler
             Console.WriteLine("GPU Resource leak in buffer handler. Did you forget to call Dispose()?");
         }
     }
-
     public void Dispose()
     {
         Dispose(true);

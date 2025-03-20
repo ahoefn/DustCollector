@@ -19,7 +19,7 @@ public class Camera : ICamera
 {
     public Camera(int width, int height)
     {
-        //Initial position and view vectors:
+        // Initial position and view vectors:
         _position = new Vector3(0.0f, 0.0f, 0.0f);
         _pitch = 0;
         _yaw = (float)Math.PI * -1 / 2;
@@ -27,19 +27,29 @@ public class Camera : ICamera
         _directionVecs = new DirectionVecs();
         _directionVecs.Set(Direction.up, new Vector3(0.0f, 1.0f, 0.0f));
         _directionVecs.Set(Direction.front, new Vector3(0.0f, 0.0f, -1.0f));
-        //Initialize matrices:
+
+        // Initialize matrices:
         model = Matrix4.Identity;
         projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, width / (float)height, 0.1f, 100.0f);
     }
+    // Matrices:
     public Matrix4 model;
+    public Matrix4 projection;
     public Matrix4 view
     {
-        get => Matrix4.LookAt(_position, _position + _directionVecs.Get(Direction.front), _directionVecs.Get(Direction.up));
+        get => Matrix4.LookAt(
+                        _position,
+                        _position + _directionVecs.Get(Direction.front),
+                        _directionVecs.Get(Direction.up)
+                        );
     }
-    public Matrix4 projection;
+
+    // Orientation properties:
     private Vector3 _position;
     private float _yaw;
     private float _pitch;
+
+    // A struct to handle the direction vector behaviour:
     private DirectionVecs _directionVecs;
     private struct DirectionVecs
     {
@@ -75,20 +85,27 @@ public class Camera : ICamera
 
         }
     }
+
+    // Methods:
     public void UpdateAspect(int width, int height)
     {
-        projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, width / (float)height, 0.1f, 100.0f);
+        projection = Matrix4.CreatePerspectiveFieldOfView(
+                                        (float)Math.PI / 4,
+                                        width / (float)height,
+                                        0.1f,
+                                        100.0f
+                                        );
     }
     public void ChangeOrientation(Vector2 delta)
     {
         _yaw += delta.X * Globals.MOUSESENSITIVITY;
 
-        //Limit up/down orientation between +-90 degrees:
+        // Limit up/down orientation between +-90 degrees:
         if (_pitch > (float)Math.PI / 2 - 0.05f) { _pitch = (float)Math.PI / 2 - 0.05f; }
         else if (_pitch < -(float)Math.PI / 2 + 0.05f) { _pitch = -(float)Math.PI / 2 + 0.05f; }
         else { _pitch -= delta.Y * Globals.MOUSESENSITIVITY; }
 
-        //Update orientation vectors:
+        // Update orientation vectors:
         Vector3 front;
         front.X = (float)Math.Cos(_pitch) * (float)Math.Cos(_yaw);
         front.Y = (float)Math.Sin(_pitch);

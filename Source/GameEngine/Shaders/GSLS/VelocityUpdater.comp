@@ -1,6 +1,9 @@
-// Updates velocities based on current forces. Note: Needs to be compiled with "#define PARTICLECOUNT (number)".
+// Updates velocities based on current forces. 
+// Note: GLSL linters will say this document has error as it is missing a preamble of:
 // #version 450 core
-// #define PARTICLECOUNT 3
+// #define PARTICLECOUNT (a number) 
+// This is added during compilation though to dynamically control particlecount.
+
 layout(local_size_x=64, local_size_y=3, local_size_z=1) in;
 
 // Input buffers:
@@ -22,7 +25,7 @@ layout(std430,binding=2)  buffer forcesBuffer
 // Uniforms and floats:
 uniform float deltaTime;
 uniform int offSetX;
-const int MAXVELOCITY = 6;
+const int MAXVELOCITY = 5;
 
 // Velocity updater:
 void main()
@@ -40,7 +43,6 @@ void main()
     {
         forceRowIndex =  (PARTICLECOUNT-1) * dir + particle; 
         velocityTemp += deltaTime * forces.F[forceRowStart+forceRowIndex];
-        // velocityTemp += 1; 
     }
     // Put bounds on allowed position displacements. 
     velocityTemp = min(velocityTemp, MAXVELOCITY);

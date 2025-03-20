@@ -16,7 +16,7 @@ public class Renderer : ICamera, IDisposable
 
         _camera = new Camera(width, height);
         _bufferHandler = new BufferHandler();
-        dimensions = 3;
+        dimensions = 10;
         int particleCount = dimensions * dimensions * dimensions;
         _model = new ParticleModel(particleCount, Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH, Paths.FORCEUPDATERPATH, _bufferHandler);
         _shader = new Shaders.GeometryShader(Paths.VERTEXPATH, Paths.FRAGMENTPATH, _bufferHandler);
@@ -68,7 +68,6 @@ public class Renderer : ICamera, IDisposable
     //Render methods:
     public void Render(float deltaTime)
     {
-        GL.MemoryBarrier(MemoryBarrierFlags.AllBarrierBits);
         if (isSimulating)
         {
             _model.Simulate(deltaTime);
@@ -76,6 +75,7 @@ public class Renderer : ICamera, IDisposable
         //Update camera to current view and start rendering
         _shader.Render(_model.particleCount, _camera);
 
+        GL.MemoryBarrier(MemoryBarrierFlags.AllBarrierBits);
         //Swap render and simulation buffers
         _bufferHandler.SwapBuffers(Buffer.positionsCurrent, Buffer.positionsFuture);
         _bufferHandler.SwapBuffers(Buffer.velocitiesCurrent, Buffer.velocitiesFuture);

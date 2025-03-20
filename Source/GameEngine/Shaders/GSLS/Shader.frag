@@ -22,6 +22,6 @@ float alphaAntiaialisedMultiSample()
 
 void main()
 {
-    // FragColor=vec4(vertexColor,alphaAntiaialisedMultiSample()*distmult);
-    FragColor=vec4(vertexColor,1.0f);
+    FragColor=vec4(vertexColor,alphaAntiaialisedMultiSample()*distmult);
+    // FragColor=vec4(vertexColor,1.0f);
 }

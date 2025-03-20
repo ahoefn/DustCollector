@@ -34,7 +34,7 @@ class ParticleModel : IBufferHandler
         _velocityUpdater.Dispatch1D(particleCount);
 
         // Update forces:
-        _forceUpdater.Dispatch1D((particleCount - 1) * (particleCount - 2) / 2);
+        _forceUpdater.Dispatch1D(particleCount * (particleCount - 1) / 2);
     }
     public void InitializeShaders()
     {
@@ -53,7 +53,7 @@ class ParticleModel : IBufferHandler
         _forceUpdater.bufferLocations.Add(1, Buffer.forcesFuture);
 
         // Set particle count in shaders:
-        _forceUpdater.SetFloat("particleCount", particleCount);
+        _forceUpdater.SetInt("particleCount", particleCount);
     }
 
     //Generates cube of dimensions^3 particles.

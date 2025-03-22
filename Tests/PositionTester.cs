@@ -14,6 +14,7 @@ sealed class PositionTester : Tester
     // Test methods
     private static void TwoParticles(TestParams tP)
     {
+        if (tP.N != 2) { throw new ArgumentException("testParams.N must be two in this test."); }
         // Initial positions and velocities:
         float[] positions = [-1, 0, 0, 1, 0, 0];
         float[] velocities = [0, 0, 1, 0, -2, 0];

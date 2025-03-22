@@ -23,6 +23,7 @@ sealed class ForceTester : Tester
     // Test methods:
     private static void TwoParticles(TestParams tP)
     {
+        if (tP.N != 2) { throw new ArgumentException("testParams.N must be two in this test."); }
         //Initial positions and velocities:
         //                   |   P1  |    P2    |
         float[] positions = [0, 0, 1, 0, 0, -1];
@@ -35,6 +36,7 @@ sealed class ForceTester : Tester
     }
     private static void FourParticles(TestParams tP)
     {
+        if (tP.N != 4) { throw new ArgumentException("testParams.N must be four in this test."); }
         //Initial positions and velocities:
         //                   |   P1  |    P2  |    P3   |   P4     |
         float[] positions = [1, 1, 0, -1, 1, 0, 1, -1, 0, -1, -1, 0];

@@ -53,10 +53,18 @@ class ParticleModel : IDisposable
         _forceUpdater.bufferLocations.Add(0, Buffer.positionsCurrent);
         _forceUpdater.bufferLocations.Add(1, Buffer.forcesFuture);
 
-        // Set particle count in shaders:
+        // Force shader uniforms:
         _forceUpdater.SetInt("particleCount", particleCount);
         _forceUpdater.SetFloat("gravityStrength", Settings.GRAVITYSTRENGTH);
+        if (Settings.COLLISSIONS)
+        {
+            _forceUpdater.SetFloat("colissionsStrength", Settings.COLLISSIONSTRENGTH);
+        }
+
     }
+
+
+
 
     // Generates cube of dimensions^3 particles.
     public float[] GeneratePositions(int dimensions)
@@ -126,7 +134,7 @@ class ParticleModel : IDisposable
             throw new ArgumentException("Dimensions does not match particleCount.", nameof(dimensions));
         }
 
-        float baseLight = 0.6f; // Determines the base luminosity.
+        float luminosity = Settings.LUMINOSITY; // Determines the base luminosity.
         var colors = new float[3 * particleCount];
         int currentIndex;
         for (int i = 0; i < dimensions; i++)
@@ -136,9 +144,9 @@ class ParticleModel : IDisposable
                 for (int k = 0; k < dimensions; k++)
                 {
                     currentIndex = 3 * (i + dimensions * j + dimensions * dimensions * k);
-                    colors[currentIndex] = baseLight + (1 - baseLight) * (float)i / dimensions;
-                    colors[currentIndex + 1] = baseLight + (1 - baseLight) * (float)j / dimensions;
-                    colors[currentIndex + 2] = baseLight + (1 - baseLight) * (float)(dimensions - i - j) / dimensions;
+                    colors[currentIndex] = luminosity + (1 - luminosity) * i / dimensions;
+                    colors[currentIndex + 1] = luminosity + (1 - luminosity) * j / dimensions;
+                    colors[currentIndex + 2] = luminosity + (1 - luminosity) * (dimensions - i - j) / dimensions;
                 }
             }
         }

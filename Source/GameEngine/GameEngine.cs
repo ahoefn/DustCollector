@@ -17,10 +17,21 @@ public class Renderer : ICamera, IDisposable
         // Initializations:
         _camera = new Camera(width, height);
         _bufferHandler = new BufferHandler();
-        dimensions = 10; // Change this number to render boxes of different sizes.
-        int particleCount = dimensions * dimensions * dimensions;
-        _model = new ParticleModel(particleCount, Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH,
-                                    Paths.FORCEUPDATERPATH, _bufferHandler);
+        int particleCount = Settings.CUBESIZE * Settings.CUBESIZE * Settings.CUBESIZE;
+
+        // Check if we want the physics engine with or without collission force:
+        if (Settings.COLLISSIONS)
+        {
+            _model = new ParticleModel(particleCount, Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH,
+                                        Paths.FORCEUPDATERPATHWCOLLISIONS, _bufferHandler);
+
+        }
+        else
+        {
+            _model = new ParticleModel(particleCount, Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH,
+                                        Paths.FORCEUPDATERPATHNOCOLLISIONS, _bufferHandler);
+        }
+
         _shader = new Shaders.GeometryShader(Paths.VERTEXPATH, Paths.FRAGMENTPATH, _bufferHandler);
 
         InitializeBuffers();
@@ -33,15 +44,14 @@ public class Renderer : ICamera, IDisposable
     private readonly BufferHandler _bufferHandler;
     private readonly Camera _camera;
     public bool isSimulating = false;
-    public readonly int dimensions;
 
     // Methods: 
     private void InitializeBuffers()
     {
         // Generate initial data:
-        float[] positions = _model.GeneratePositions(dimensions);
-        float[] colors = _model.GenerateColors(dimensions);
-        float[] velocities = _model.GenerateVelocities(dimensions);
+        float[] positions = _model.GeneratePositions(Settings.CUBESIZE);
+        float[] colors = _model.GenerateColors(Settings.CUBESIZE);
+        float[] velocities = _model.GenerateVelocities(Settings.CUBESIZE);
         float[] forces = _model.GenerateForces();
 
         // Create buffers:
@@ -75,20 +85,23 @@ public class Renderer : ICamera, IDisposable
     {
         if (isSimulating)
         {
+            GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
+            //Swap render and simulation buffers
+            _bufferHandler.SwapBuffers(Buffer.positionsCurrent, Buffer.positionsFuture);
+            _bufferHandler.SwapBuffers(Buffer.velocitiesCurrent, Buffer.velocitiesFuture);
+            _bufferHandler.SwapBuffers(Buffer.forcesCurrent, Buffer.forcesFuture);
+
+            // Need to rebind the buffers to the vertex Array after swapping:
+            _shader.BindBufferToArray(Buffer.positionsCurrent, 0, 3);
+            _shader.BindBufferToArray(Buffer.colors, 1, 3);
+
+            // Simulate next step
             _model.Simulate(deltaTime);
         }
         //Update camera to current view and start rendering
         _shader.Render(_model.particleCount, _camera);
 
-        GL.MemoryBarrier(MemoryBarrierFlags.ShaderStorageBarrierBit);
-        //Swap render and simulation buffers
-        _bufferHandler.SwapBuffers(Buffer.positionsCurrent, Buffer.positionsFuture);
-        _bufferHandler.SwapBuffers(Buffer.velocitiesCurrent, Buffer.velocitiesFuture);
-        _bufferHandler.SwapBuffers(Buffer.forcesCurrent, Buffer.forcesFuture);
 
-        // Need to rebind the buffers to the vertex Array after swapping:
-        _shader.BindBufferToArray(Buffer.positionsCurrent, 0, 3);
-        _shader.BindBufferToArray(Buffer.colors, 1, 3);
     }
 
 

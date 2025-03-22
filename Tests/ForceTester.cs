@@ -6,7 +6,7 @@ namespace DustCollector.Tests;
 
 sealed class ForceTester : Tester
 {
-    public ForceTester(TestParams testParams) : base(Paths.FORCEUPDATERPATH)
+    public ForceTester(TestParams testParams) : base(Paths.FORCEUPDATERPATHNOCOLLISIONS)
     {
         testParams.N = 2;
         RunTest(TwoParticles, testParams);
@@ -107,6 +107,7 @@ sealed class ForceTester : Tester
         //Set uniforms and dispatch:
         tP.shader.SetInt("offSetX", 0);
         tP.shader.SetInt("particleCount", N);
+        tP.shader.SetFloat("gravityStrength", Settings.GRAVITYSTRENGTH);
 
         tP.shader.Dispatch1D(N * (N - 1) / 2);
 
@@ -148,7 +149,7 @@ sealed class ForceTester : Tester
         Vector3 pos1 = new Vector3(positions[3 * particleIndex1], positions[3 * particleIndex1 + 1], positions[3 * particleIndex1 + 2]);
         Vector3 pos2 = new Vector3(positions[3 * particleIndex2], positions[3 * particleIndex2 + 1], positions[3 * particleIndex2 + 2]);
         Vector3 distance = pos2 - pos1;
-        Vector3 force = Vector3.Normalize(distance) / Vector3.Dot(distance, distance);
+        Vector3 force = Settings.GRAVITYSTRENGTH * Vector3.Normalize(distance) / Vector3.Dot(distance, distance);
         return force;
     }
     private static float ForceCalculator(int particleIndex1, int particleIndex2, int dir, float[] positions)

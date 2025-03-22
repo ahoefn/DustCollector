@@ -8,7 +8,7 @@ public class Renderer : ICamera, IDisposable
     public Renderer(int width, int height)
     {
         //Global GL Settings, should not be changed anywhere else.
-        GL.PointSize(Globals.POINTSIZE);
+        GL.PointSize(Settings.POINTSIZE);
         GL.ClearColor(0.02f, 0.01f, 0.10f, 1.0f);
         GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
         GL.Enable(EnableCap.Blend);
@@ -61,7 +61,7 @@ public class Renderer : ICamera, IDisposable
     {
         // Geometry shader:
         // Set globals:
-        _shader.SetFloat("POINTSIZE", Globals.POINTSIZE);
+        _shader.SetFloat("POINTSIZE", Settings.POINTSIZE);
 
         // Create VertexArray:
         _shader.BindBufferToArray(Buffer.positionsCurrent, 0, 3);

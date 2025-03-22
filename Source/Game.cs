@@ -84,27 +84,27 @@ public class Game : GameWindow
         //Movement keys:
         if (input.IsKeyDown(Keys.W))
         {
-            _Renderer.ChangePosition(GameEngine.Direction.front, Globals.MOVSPEED * deltaTime);
+            _Renderer.ChangePosition(GameEngine.Direction.front, Settings.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.S))
         {
-            _Renderer.ChangePosition(GameEngine.Direction.front, -Globals.MOVSPEED * deltaTime);
+            _Renderer.ChangePosition(GameEngine.Direction.front, -Settings.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.A))
         {
-            _Renderer.ChangePosition(GameEngine.Direction.right, -Globals.MOVSPEED * deltaTime);
+            _Renderer.ChangePosition(GameEngine.Direction.right, -Settings.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.D))
         {
-            _Renderer.ChangePosition(GameEngine.Direction.right, Globals.MOVSPEED * deltaTime);
+            _Renderer.ChangePosition(GameEngine.Direction.right, Settings.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.LeftControl))
         {
-            _Renderer.ChangePosition(GameEngine.Direction.up, -Globals.MOVSPEED * deltaTime);
+            _Renderer.ChangePosition(GameEngine.Direction.up, -Settings.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.LeftShift))
         {
-            _Renderer.ChangePosition(GameEngine.Direction.up, Globals.MOVSPEED * deltaTime);
+            _Renderer.ChangePosition(GameEngine.Direction.up, Settings.MOVSPEED * deltaTime);
         }
 
         //Start/stop simulation and show framerate:

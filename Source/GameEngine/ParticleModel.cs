@@ -55,6 +55,7 @@ class ParticleModel : IDisposable
 
         // Set particle count in shaders:
         _forceUpdater.SetInt("particleCount", particleCount);
+        _forceUpdater.SetFloat("gravityStrength", Settings.GRAVITYSTRENGTH);
     }
 
     // Generates cube of dimensions^3 particles.
@@ -64,7 +65,7 @@ class ParticleModel : IDisposable
         {
             throw new ArgumentException("Dimensions does not match particleCount.", nameof(dimensions));
         }
-        int arraySize = Globals.LOCALS_SIZE_X * (int)Math.Ceiling((float)particleCount / Globals.LOCALS_SIZE_X);
+        int arraySize = Globals.LOCAL_SIZE_X * (int)Math.Ceiling((float)particleCount / Globals.LOCAL_SIZE_X);
         var particles = new float[3 * arraySize];
         for (int i = 0; i < dimensions; i++)
         {
@@ -90,7 +91,7 @@ class ParticleModel : IDisposable
             throw new ArgumentException("Dimensions does not match particleCount.", nameof(dimensions));
         }
 
-        int arraySize = Globals.LOCALS_SIZE_X * (int)Math.Ceiling((float)particleCount / Globals.LOCALS_SIZE_X);
+        int arraySize = Globals.LOCAL_SIZE_X * (int)Math.Ceiling((float)particleCount / Globals.LOCAL_SIZE_X);
         var velocities = new float[3 * arraySize];
         int currentIndex;
         for (int i = 0; i < dimensions; i++)
@@ -112,7 +113,7 @@ class ParticleModel : IDisposable
     // Also makes sure the output array is a multiple of 64*3
     public float[] GenerateForces()
     {
-        int matrixSize = 3 * Globals.LOCALS_SIZE_X * (int)Math.Ceiling((float)particleCount / Globals.LOCALS_SIZE_X);
+        int matrixSize = 3 * Globals.LOCAL_SIZE_X * (int)Math.Ceiling((float)particleCount / Globals.LOCAL_SIZE_X);
         var forces = new float[matrixSize * matrixSize];
         return forces;
     }

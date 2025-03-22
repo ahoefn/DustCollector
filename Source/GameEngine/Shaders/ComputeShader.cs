@@ -107,7 +107,7 @@ public class ComputeShader : Shader
 
         // Accounts for workgroup size and counts the current threads we need.
         (int x, int y, int z) currentCount = (x_in, y_in, z_in);
-        currentCount.x = (int)Math.Ceiling((float)currentCount.x / Globals.LOCALS_SIZE_X);
+        currentCount.x = (int)Math.Ceiling((float)currentCount.x / Globals.LOCAL_SIZE_X);
         int xCount = (currentCount.x - (currentCount.x % Globals.WORKGROUPSIZE_X)) / Globals.WORKGROUPSIZE_X;
 
         for (int i = 0; i < xCount; i++)

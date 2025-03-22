@@ -97,12 +97,12 @@ public class Camera : ICamera
     }
     public void ChangeOrientation(Vector2 delta)
     {
-        _yaw += delta.X * Globals.MOUSESENSITIVITY;
+        _yaw += delta.X * Settings.MOUSESENSITIVITY;
 
         // Limit up/down orientation between +-90 degrees:
         if (_pitch > (float)Math.PI / 2 - 0.05f) { _pitch = (float)Math.PI / 2 - 0.05f; }
         else if (_pitch < -(float)Math.PI / 2 + 0.05f) { _pitch = -(float)Math.PI / 2 + 0.05f; }
-        else { _pitch -= delta.Y * Globals.MOUSESENSITIVITY; }
+        else { _pitch -= delta.Y * Settings.MOUSESENSITIVITY; }
 
         // Update orientation vectors:
         Vector3 front;

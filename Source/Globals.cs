@@ -3,19 +3,14 @@ namespace DustCollector;
 //Global numbers:
 public static class Globals
 {
-    public const float POINTSIZE = 200;
-    public const float MOVSPEED = 6.0f;
-    public const float MOUSESENSITIVITY = 0.003f;
-    //TODO: Implement dynamically choosing workgroupsize: 
+    // The maximum workgroup size as specified by the OpenGL specs
     public const int WORKGROUPSIZE_X = 65535;
     public const int WORKGROUPSIZE_Y = 65535;
     public const int WORKGROUPSIZE_Z = 65535;
 
     // Shader constants:
-    public const int LOCALS_SIZE_X = 64;
+    public const int LOCAL_SIZE_X = 64;
 
-    // Enable OpenGL debugging
-    public const bool OPENGLDEBUGGING = false;
 }
 
 //Global paths:

@@ -16,6 +16,7 @@ layout(std430,binding=1)  buffer forcesBufferFuture
 // Uniforms:
 uniform int offSetX;
 uniform int particleCount;
+uniform float gravityStrength;
 
 // Functions:
 uint GetForceIndex(uint row, uint column,uint dir);
@@ -41,7 +42,7 @@ void main()
     // Calculate force based on distance between particles.
     vec3 pos_dif = posRow - posColumn;
     float difDot = dot(pos_dif, pos_dif);
-    vec3 forceVec = -0.02f*pos_dif /(difDot * sqrt(difDot));
+    vec3 forceVec = -gravityStrength*pos_dif /(difDot * sqrt(difDot));
 
     // Write to forcebuffer.
     forcesFuture.F[GetForceIndex(idRow,idColumn,0)] = forceVec.x;

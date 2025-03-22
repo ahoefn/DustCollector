@@ -16,10 +16,10 @@ public static class Globals
 //Global paths:
 public static class Paths
 {
-    public const string VERTEXPATH = "GameEngine/Shaders/GSLS/Shader.vert";
-    public const string FRAGMENTPATH = "GameEngine/Shaders/GSLS/Shader.frag";
-    public const string POSITIONUPDATERPATH = "GameEngine/Shaders/GSLS/PositionUpdater.comp";
-    public const string VELOCITYUPDATERPATH = "GameEngine/Shaders/GSLS/VelocityUpdater.comp";
-    public const string FORCEUPDATERPATHWCOLLISIONS = "GameEngine/Shaders/GSLS/ForceUpdaterWCollisions.comp";
-    public const string FORCEUPDATERPATHNOCOLLISIONS = "GameEngine/Shaders/GSLS/ForceUpdaterNoCollisions.comp";
+    public const string VERTEXPATH = "GameEngine/Shaders/GLSL/Shader.vert";
+    public const string FRAGMENTPATH = "GameEngine/Shaders/GLSL/Shader.frag";
+    public const string POSITIONUPDATERPATH = "GameEngine/Shaders/GLSL/PositionUpdater.comp";
+    public const string VELOCITYUPDATERPATH = "GameEngine/Shaders/GLSL/VelocityUpdater.comp";
+    public const string FORCEUPDATERPATHWCOLLISIONS = "GameEngine/Shaders/GLSL/ForceUpdaterWCollisions.comp";
+    public const string FORCEUPDATERPATHNOCOLLISIONS = "GameEngine/Shaders/GLSL/ForceUpdaterNoCollisions.comp";
 }

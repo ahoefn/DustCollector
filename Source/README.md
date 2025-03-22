@@ -1,16 +1,5 @@
 # Code structure.
 
-## Source
+The main structure of the code in this repo is as follows. The entry point of the program is in [Program.cs](https://github.com/ahoefn/DustCollector/blob/main/Source/Program.cs) which creates a [Game](https://github.com/ahoefn/DustCollector/blob/main/Source/Game.cs) instance and runs it. The game class is an OpenTK GameWindow and handles all inputs and resizing logic for the program. Furthermore it creates a [GameEngine](https://github.com/ahoefn/DustCollector/blob/main/Source/GameEngine/GameEngine.cs) which handles both the rendering and simulation. Most importantly, the GameEngine creates a [GeometryShader](https://github.com/ahoefn/DustCollector/blob/main/Source/GameEngine/Shaders/GeometryShader.cs) which handles the rendering, as well as a [ParticleModel](https://github.com/ahoefn/DustCollector/blob/main/Source/GameEngine/ParticleModel.cs) that handles the simulation through a variety of [ComputeShaders](https://github.com/ahoefn/DustCollector/blob/main/Source/GameEngine/Shaders/ComputeShader.cs). The code for all these shaders is located in the [Source/GameEngine/Shaders/GLSL](https://github.com/ahoefn/DustCollector/blob/main/Source/GameEngine/Shaders/GLSL) folder.
 
-##### Program.cs
-
-##### Game.cs
-
-##### Settings.cs
-
-##### Globals.cs
-
-##### GLDebug.cs
-
-## Shaders
-
+Furthermore, there is a [Utilities](https://github.com/ahoefn/DustCollector/tree/main/Source/Utilities) containing a OpenGL debugger as well as some global cosntants. Finally, we have [Settings.cs](https://github.com/ahoefn/DustCollector/blob/main/Source/Settings.cs) in which the tweakable settings of the simulator can be found.

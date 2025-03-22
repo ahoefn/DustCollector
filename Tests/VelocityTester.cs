@@ -13,7 +13,8 @@ sealed class VelocityTester : Tester
         RunTest(NParticlesRand, tP);
     }
 
-    public static void TwoParticles(TestParams testParams)
+    // Test methods:
+    private static void TwoParticles(TestParams testParams)
     {
         if (testParams.N != 2) { throw new ArgumentException("testParams.N must be two in this test."); }
 
@@ -30,9 +31,9 @@ sealed class VelocityTester : Tester
     }
 
     //Same structure as TwoParticles.
-    public static void FourParticles(TestParams testParams)
+    private static void FourParticles(TestParams testParams)
     {
-        if (testParams.N != 2) { throw new ArgumentException("testParams.N must be two in this test."); }
+        if (testParams.N != 4) { throw new ArgumentException("testParams.N must be four in this test."); }
 
         //Initial positions and velocities:
         //                   |   P1  |    P2  |    P3  |    P4
@@ -48,7 +49,7 @@ sealed class VelocityTester : Tester
         float[] velocitiesOutExpected = GetExpectedOutput(velocities, forces);
         CollectionAssert.AreEqual(velocitiesOut, velocitiesOutExpected);
     }
-    public static void NParticlesRand(TestParams testParams)
+    private static void NParticlesRand(TestParams testParams)
     {
         //Make sure GL context is correct and compile shader:
         if (testParams.N == null) { throw new ArgumentException("N must not be null.", nameof(testParams.N)); }
@@ -105,6 +106,14 @@ sealed class VelocityTester : Tester
                     velocities_out[index] += forces[forceRowStart + forceColumn];
                 }
             }
+        }
+
+        // Make pass to match maximum velocity:
+        int MAXVELOCITY = 10; // Must be the same as in VelocityUpdater.comp
+        for (int i = 0; i < 3 * N; i++)
+        {
+            velocities_out[i] = Math.Max(velocities_out[i], -MAXVELOCITY);
+            velocities_out[i] = Math.Min(velocities_out[i], MAXVELOCITY);
         }
         return velocities_out;
     }

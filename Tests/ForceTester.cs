@@ -20,7 +20,7 @@ sealed class ForceTester : Tester
         RunTest(TotalForceTesterNPartRand, testParams);
     }
 
-
+    // Test methods:
     private static void TwoParticles(TestParams tP)
     {
         //Initial positions and velocities:
@@ -112,7 +112,34 @@ sealed class ForceTester : Tester
         forcesOut = tP.bufferHandler.GetBufferData(GameEngine.Buffer.forcesFuture, 3 * N * (N - 1));
         return forcesOut;
     }
+    // Expected output:
+    private static float[] GetExpectedOutput(float[] positions)
+    {
+        int N = positions.Length / 3;
+        var forcesOutGoal = new float[N * (N - 1) / 2];
 
+        float force;
+        int rowIndex;
+        int dirIndex;
+        int columnIndex;
+        int particleColumnActual;
+        for (int particleRow = 0; particleRow < N; particleRow++)
+        {
+            rowIndex = 3 * particleRow * (N - 1);
+            for (int dir = 0; dir < 3; dir++)
+            {
+                dirIndex = (N - 1) * dir;
+                for (int particleColumn = 0; particleColumn < N - 1; particleColumn++)
+                {
+                    columnIndex = particleColumn;
+                    particleColumnActual = particleColumn + (particleColumn < particleRow ? 0 : 1);
+                    force = ForceCalculator(particleRow, particleColumnActual, dir, positions);
+                    forcesOutGoal[rowIndex + dirIndex + columnIndex] = force;
+                }
+            }
+        }
+        return forcesOutGoal;
+    }
     // Force calculation methods:
     private static Vector3 ForceVecCalculator(int particleIndex1, int particleIndex2, float[] positions)
     {
@@ -167,32 +194,5 @@ sealed class ForceTester : Tester
             }
         }
         return totalForce;
-    }
-    private static float[] GetExpectedOutput(float[] positions)
-    {
-        int N = positions.Length / 3;
-        var forcesOutGoal = new float[N * (N - 1) / 2];
-
-        float force;
-        int rowIndex;
-        int dirIndex;
-        int columnIndex;
-        int particleColumnActual;
-        for (int particleRow = 0; particleRow < N; particleRow++)
-        {
-            rowIndex = 3 * particleRow * (N - 1);
-            for (int dir = 0; dir < 3; dir++)
-            {
-                dirIndex = (N - 1) * dir;
-                for (int particleColumn = 0; particleColumn < N - 1; particleColumn++)
-                {
-                    columnIndex = particleColumn;
-                    particleColumnActual = particleColumn + (particleColumn < particleRow ? 0 : 1);
-                    force = ForceCalculator(particleRow, particleColumnActual, dir, positions);
-                    forcesOutGoal[rowIndex + dirIndex + columnIndex] = force;
-                }
-            }
-        }
-        return forcesOutGoal;
     }
 }

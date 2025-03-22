@@ -7,7 +7,7 @@ using OpenTK.Windowing.Desktop;
 namespace DustCollector.Tests;
 
 //Input struct for test functions:
-public struct TestParams
+public class TestParams
 {
     public TestParams(GameWindow window_in, int program_in)
     {
@@ -38,7 +38,7 @@ class TestProgram
         testParams.N = 800;
 
         // Position tests:
-        PositionTester.TwoParticles(testParams);
+        new PositionTester(testParams);
 
         // Velocity tests:
         new VelocityTester(testParams);

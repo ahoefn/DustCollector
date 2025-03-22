@@ -3,16 +3,21 @@ namespace DustCollector.Tests;
 
 class Tester
 {
+    public Tester(string path_in)
+    {
+        _path = path_in;
+    }
     // Utility func useful in a variety of tests:
-    protected virtual void InitializeTest(TestParams testParams, string path)
+    protected virtual void InitializeTest(TestParams testParams)
     {
         //Make sure GL context is correct and compile shader:
         testParams.window.MakeCurrent();
         GL.UseProgram(testParams.program);
         testParams.bufferHandler = new GameEngine.BufferHandler();
-        testParams.shader = new GameEngine.Shaders.ComputeShader(path, testParams.bufferHandler);
+        testParams.shader = new GameEngine.Shaders.ComputeShader(_path, testParams.bufferHandler);
         Assert.IsNotNull(testParams.shader);
     }
+    protected readonly string _path;
     protected static void EndTest(TestParams testParams)
     {
         testParams.bufferHandler?.Dispose();
@@ -21,9 +26,9 @@ class Tester
         GL.DeleteProgram(testParams.program);
 
     }
-    protected void RunTest(Action<TestParams> testFunc, TestParams testParams, string path)
+    protected void RunTest(Action<TestParams> testFunc, TestParams testParams)
     {
-        InitializeTest(testParams, path);
+        InitializeTest(testParams);
         testFunc(testParams);
         EndTest(testParams);
     }

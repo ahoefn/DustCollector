@@ -6,18 +6,18 @@ namespace DustCollector.Tests;
 
 sealed class ForceTester : Tester
 {
-    public ForceTester(TestParams testParams)
+    public ForceTester(TestParams testParams) : base(Paths.FORCEUPDATERPATH)
     {
         testParams.N = 2;
-        RunTest(TwoParticles, testParams, Paths.FORCEUPDATERPATH);
+        RunTest(TwoParticles, testParams);
         testParams.N = 4;
-        RunTest(FourParticles, testParams, Paths.FORCEUPDATERPATH);
+        RunTest(FourParticles, testParams);
         testParams.N = 800;
-        RunTest(NParticlesRand, testParams, Paths.FORCEUPDATERPATH);
+        RunTest(NParticlesRand, testParams);
         testParams.N = 4;
-        RunTest(TotalForceTester4Part, testParams, Paths.FORCEUPDATERPATH);
+        RunTest(TotalForceTester4Part, testParams);
         testParams.N = 800;
-        RunTest(TotalForceTesterNPartRand, testParams, Paths.FORCEUPDATERPATH);
+        RunTest(TotalForceTesterNPartRand, testParams);
     }
 
 

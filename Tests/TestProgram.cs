@@ -41,9 +41,7 @@ class TestProgram
         PositionTester.TwoParticles(testParams);
 
         // Velocity tests:
-        VelocityTester.TwoParticles(testParams);
-        VelocityTester.FourParticles(testParams);
-        VelocityTester.NParticlesRand(testParams);
+        new VelocityTester(testParams);
 
         //Force tests:
         new ForceTester(testParams);

@@ -9,7 +9,7 @@ In this repo is a simple particle simulator I have built / am building. Once ope
  * R to restart the simulation,
  * ESC to exit the window.
 
-There are also various settings that can be adjusted by changing the values in Settings.cs. Note that these settings require that the program is recompiled. 
+There are also various settings that can be adjusted by changing the values in "Source/Settings.cs". Note that these settings require that the program is recompiled. 
 
 ### Compiling
 

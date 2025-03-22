@@ -11,21 +11,25 @@ In this repo is a simple particle simulator I have built / am building. Once ope
 
 There are also various settings that can be adjusted by changing the values in Settings.cs. Note that these settings require that the program is recompiled. 
 
-#### Compiling
+### Compiling
 
 The program itself can be run by using the command
+
     dotnet run
+    
 while in the "source" folder. Otherwise, one can use
+
     dotnet build -c Release
     dotnet run -c Release
-while in the source folder. Similarly, the tests can be run and compiled using the same commands while in the "Tests" folder.
+    
+while in the "source" folder. Similarly, the tests can be run and compiled using the same commands while in the "Tests" folder.
 
-#### Code structure.
+### Code structure.
 
 Both "source" and "Tests" contain a markdown file explaining the code structure in more detail.
 
-#### Dependencies
+### Dependencies
 [OpenTK v4.9.3](https://www.nuget.org/packages/OpenTK/)
 
-#### Requirements
+### Requirements
 Graphics card must support OpenGL v4.5 or later.

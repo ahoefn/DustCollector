@@ -13,6 +13,9 @@ public static class Globals
 
     // Shader constants:
     public const int LOCALS_SIZE_X = 64;
+
+    // Enable OpenGL debugging
+    public const bool OPENGLDEBUGGING = false;
 }
 
 //Global paths:

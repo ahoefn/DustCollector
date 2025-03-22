@@ -125,7 +125,7 @@ class ParticleModel : IDisposable
             throw new ArgumentException("Dimensions does not match particleCount.", nameof(dimensions));
         }
 
-        float baseLight = 0.4f; // Determines the base luminosity.
+        float baseLight = 0.6f; // Determines the base luminosity.
         var colors = new float[3 * particleCount];
         int currentIndex;
         for (int i = 0; i < dimensions; i++)

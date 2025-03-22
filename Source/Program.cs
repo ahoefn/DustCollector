@@ -4,8 +4,14 @@ class Program
 {
     static void Main(string[] args)
     {
-        using (var game = new Game(800, 600, "DustCollector test"))
+        if (Globals.OPENGLDEBUGGING)
         {
+            using var game = new Game(1080, 800, "DustCollector test", debug: true);
+            game.Run();
+        }
+        else
+        {
+            using var game = new Game(1080, 800, "DustCollector test");
             game.Run();
         }
     }

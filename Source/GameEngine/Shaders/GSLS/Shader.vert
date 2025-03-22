@@ -27,6 +27,6 @@ void main()
 
     // Output color and alpha scaling: 
     vertexColor = colorIn;
-    distmult = 1 / (1+0.2f*length(MVvec));
+    distmult = 1 / (1+0.1f*length(MVvec));
 }
 

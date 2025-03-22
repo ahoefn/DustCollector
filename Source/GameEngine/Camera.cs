@@ -85,7 +85,6 @@ public class Camera : ICamera
 
         }
     }
-
     // Methods:
     public void UpdateAspect(int width, int height)
     {

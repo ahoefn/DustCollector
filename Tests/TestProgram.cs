@@ -15,8 +15,8 @@ public struct TestParams
         program = program_in;
     }
     public readonly GameWindow window;
-    public GameEngine.BufferHandler bufferHandler;
-    public GameEngine.Shaders.ComputeShader shader;
+    public GameEngine.BufferHandler? bufferHandler;
+    public GameEngine.Shaders.ComputeShader? shader;
     public readonly int program;
     public int? N;
 }
@@ -46,11 +46,7 @@ class TestProgram
         VelocityTester.NParticlesRand(testParams);
 
         //Force tests:
-        ForceTester.TwoParticles(testParams);
-        ForceTester.FourParticles(testParams);
-        ForceTester.NParticlesRand(testParams);
-        ForceTester.TotalForceTester(testParams);
-        ForceTester.TotalForceTesterNpartRand(testParams);
+        new ForceTester(testParams);
     }
 
 }

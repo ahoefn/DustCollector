@@ -1,9 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using DustCollector.GameEngine;
-using DustCollector.GameEngine.Shaders;
 namespace DustCollector.Tests;
 
-public sealed class VelocityTester
+sealed class VelocityTester : Tester
 {
     public static void TwoParticles(TestParams testParams)
     {
@@ -168,6 +166,18 @@ public sealed class VelocityTester
             }
         }
         CollectionAssert.AreEqual(velocities_out_goal, velocities_out, new FloatComparer(0.001f));
+    }
+    // Tester override:
+    protected override void InitializeTest(TestParams tP, string path)
+    {
+        //Make sure GL context is correct and compile shader:
+        tP.window.MakeCurrent();
+        GL.UseProgram(tP.program);
+        tP.bufferHandler = new GameEngine.BufferHandler();
+        string preAmble = $"#define PARTICLECOUNT {tP.N}\n";
+        tP.shader = new GameEngine.Shaders.ComputeShader(Paths.VELOCITYUPDATERPATH, preAmble, tP.bufferHandler);
+        Assert.IsNotNull(tP.shader);
+        Assert.IsNotNull(tP.bufferHandler);
     }
 
 }

@@ -8,15 +8,20 @@ sealed class ForceTester : Tester
 {
     public ForceTester(TestParams testParams)
     {
+        testParams.N = 2;
         RunTest(TwoParticles, testParams, Paths.FORCEUPDATERPATH);
+        testParams.N = 4;
         RunTest(FourParticles, testParams, Paths.FORCEUPDATERPATH);
+        testParams.N = 800;
         RunTest(NParticlesRand, testParams, Paths.FORCEUPDATERPATH);
-        RunTest(TotalForceTester, testParams, Paths.FORCEUPDATERPATH);
-        RunTest(TotalForceTesterNpartRand, testParams, Paths.FORCEUPDATERPATH);
+        testParams.N = 4;
+        RunTest(TotalForceTester4Part, testParams, Paths.FORCEUPDATERPATH);
+        testParams.N = 800;
+        RunTest(TotalForceTesterNPartRand, testParams, Paths.FORCEUPDATERPATH);
     }
 
 
-    public static void TwoParticles(TestParams tP)
+    private static void TwoParticles(TestParams tP)
     {
         //Initial positions and velocities:
         //                   |   P1  |    P2    |
@@ -25,19 +30,19 @@ sealed class ForceTester : Tester
         float[] forcesOutGoal = [0, 0, -0.25f, // P1
                                  0, 0, 0.25f];// P2
 
-        float[] forcesOut = GetResult(tP, positions);
+        float[] forcesOut = GetShaderOutput(tP, positions);
         CollectionAssert.AreEqual(forcesOut, forcesOutGoal);
     }
-    public static void FourParticles(TestParams tP)
+    private static void FourParticles(TestParams tP)
     {
         //Initial positions and velocities:
         //                   |   P1  |    P2  |    P3   |   P4     |
         float[] positions = [1, 1, 0, -1, 1, 0, 1, -1, 0, -1, -1, 0];
         float[] forcesOutGoal = GetExpectedOutput(positions);
-        float[] forcesOut = GetResult(tP, positions);
+        float[] forcesOut = GetShaderOutput(tP, positions);
         CollectionAssert.AreEqual(forcesOut, forcesOutGoal);
     }
-    public static void NParticlesRand(TestParams tP)
+    private static void NParticlesRand(TestParams tP)
     {
         if (tP.N == null) { throw new ArgumentException("N must not be null.", nameof(tP.N)); }
         int N = (int)tP.N;
@@ -45,24 +50,24 @@ sealed class ForceTester : Tester
         // Now a random N particle array:
         float[] positions = GenerateRandomArray(3 * N);
         float[] forcesOutGoal = GetExpectedOutput(positions);
-        float[] forcesOut = GetResult(tP, positions);
+        float[] forcesOut = GetShaderOutput(tP, positions);
 
         CollectionAssert.AreEqual(forcesOut, forcesOutGoal, new FloatComparer(0.001f));
     }
-    public static void TotalForceTester(TestParams tP)
+    private static void TotalForceTester4Part(TestParams tP)
     {
-        int N = 4;
+        if (tP.N != 4) { throw new ArgumentException("N must be four for this test."); }
         // Initial positions and velocities:
         //                   |   P1  |    P2  |    P3   |   P4     |
         float[] positions = [1, 1, 0, -1, 1, 0, 1, -1, 0, -1, -1, 0];
 
         // Compare total forces:
         float[] expectedTotalForce = TotalForceCalculatorDirect(positions);
-        float[] forcesOut = GetResult(tP, positions);
-        float[] actualTotalForce = TotalForceCalculatorFromShader(forcesOut, N);
+        float[] forcesOut = GetShaderOutput(tP, positions);
+        float[] actualTotalForce = TotalForceCalculatorFromShader(forcesOut, (int)tP.N);
         CollectionAssert.AreEqual(actualTotalForce, expectedTotalForce);
     }
-    public static void TotalForceTesterNpartRand(TestParams tP)
+    private static void TotalForceTesterNPartRand(TestParams tP)
     {
         if (tP.N == null)
         {
@@ -76,16 +81,20 @@ sealed class ForceTester : Tester
 
         // Compare total forces:
         float[] expectedTotalForce = TotalForceCalculatorDirect(positions);
-        float[] shaderOutput = GetResult(tP, positions);
+        float[] shaderOutput = GetShaderOutput(tP, positions);
         float[] actualTotalForce = TotalForceCalculatorFromShader(shaderOutput, N);
         CollectionAssert.AreEqual(actualTotalForce, expectedTotalForce, new FloatComparer(0.1f));
     }
 
     // Computation method:
-    private static float[] GetResult(TestParams tP, float[] positions)
+    private static float[] GetShaderOutput(TestParams tP, float[] positions)
     {
+        if (tP.bufferHandler == null) { throw new ArgumentException("Buffer handler can not be zero while testing."); }
+        if (tP.shader == null) { throw new ArgumentException("Shader can not be zero while testing."); }
+
         int N = positions.Length / 3;
         var forcesOut = new float[N * (N - 1) / 2];
+
         //Create shader buffers and run simulation:
         tP.bufferHandler.CreateStorageBuffer(GameEngine.Buffer.positionsCurrent, positions, BufferUsageHint.StreamDraw);
         tP.bufferHandler.CreateStorageBuffer(GameEngine.Buffer.forcesFuture, forcesOut, BufferUsageHint.StreamDraw);

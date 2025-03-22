@@ -12,7 +12,7 @@ public class Game : GameWindow
     {
         _timer = new Stopwatch();
         _timer.Start();
-        _Renderer = new GameEngine.Renderer(Size.X, Size.Y);
+        _gameEngine = new GameEngine.Renderer(Size.X, Size.Y);
     }
 
     // If Game is called with debug : true, enable OpenGL debugging:
@@ -30,11 +30,11 @@ public class Game : GameWindow
 
         _timer = new Stopwatch();
         _timer.Start();
-        _Renderer = new GameEngine.Renderer(Size.X, Size.Y);
+        _gameEngine = new GameEngine.Renderer(Size.X, Size.Y);
     }
 
     // Properties:
-    private GameEngine.Renderer _Renderer;
+    private GameEngine.Renderer _gameEngine;
     private Stopwatch _timer;
     private bool _firstMouse = true;
     private Vector2 _prevMousePos;
@@ -54,7 +54,7 @@ public class Game : GameWindow
         base.OnRenderFrame(args);
 
         float deltaTime = (float)args.Time;
-        _Renderer.Render(deltaTime);
+        _gameEngine.Render(deltaTime);
 
         //Update framerate:
         _avgFrameRate = (_avgFrameRate * _frameCount + deltaTime) / (_frameCount + 1);
@@ -84,39 +84,39 @@ public class Game : GameWindow
         //Movement keys:
         if (input.IsKeyDown(Keys.W))
         {
-            _Renderer.ChangePosition(GameEngine.Direction.front, Settings.MOVSPEED * deltaTime);
+            _gameEngine.ChangePosition(GameEngine.Direction.front, Settings.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.S))
         {
-            _Renderer.ChangePosition(GameEngine.Direction.front, -Settings.MOVSPEED * deltaTime);
+            _gameEngine.ChangePosition(GameEngine.Direction.front, -Settings.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.A))
         {
-            _Renderer.ChangePosition(GameEngine.Direction.right, -Settings.MOVSPEED * deltaTime);
+            _gameEngine.ChangePosition(GameEngine.Direction.right, -Settings.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.D))
         {
-            _Renderer.ChangePosition(GameEngine.Direction.right, Settings.MOVSPEED * deltaTime);
+            _gameEngine.ChangePosition(GameEngine.Direction.right, Settings.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.LeftControl))
         {
-            _Renderer.ChangePosition(GameEngine.Direction.up, -Settings.MOVSPEED * deltaTime);
+            _gameEngine.ChangePosition(GameEngine.Direction.up, -Settings.MOVSPEED * deltaTime);
         }
         if (input.IsKeyDown(Keys.LeftShift))
         {
-            _Renderer.ChangePosition(GameEngine.Direction.up, Settings.MOVSPEED * deltaTime);
+            _gameEngine.ChangePosition(GameEngine.Direction.up, Settings.MOVSPEED * deltaTime);
         }
 
         //Start/stop simulation and show framerate:
         if (input.IsKeyPressed(Keys.Space))
         {
-            if (_Renderer.isSimulating)
+            if (_gameEngine.isSimulating)
             {
                 Console.WriteLine("Framerate was: " + _avgFrameRate);
                 _avgFrameRate = 0;
                 _frameCount = 0;
             }
-            _Renderer.isSimulating = !_Renderer.isSimulating;
+            _gameEngine.isSimulating = !_gameEngine.isSimulating;
         }
 
         //Restart renderer on R:
@@ -137,7 +137,7 @@ public class Game : GameWindow
         {
             var deltaVec = new Vector2(MouseState.X - _prevMousePos.X, MouseState.Y - _prevMousePos.Y);
             _prevMousePos = MouseState.Position;
-            _Renderer.ChangeOrientation(deltaVec);
+            _gameEngine.ChangeOrientation(deltaVec);
         }
     }
 
@@ -146,16 +146,16 @@ public class Game : GameWindow
         base.OnFramebufferResize(e);
 
         GL.Viewport(0, 0, e.Width, e.Height);
-        _Renderer.UpdateAspect(e.Width, e.Height);
+        _gameEngine.UpdateAspect(e.Width, e.Height);
     }
     protected override void OnUnload()
     {
         base.OnUnload();
-        _Renderer.Dispose();
+        _gameEngine.Dispose();
     }
     private void RestartRenderer()
     {
-        _Renderer.Dispose();
-        _Renderer = new GameEngine.Renderer(Size.X, Size.Y);
+        _gameEngine.Dispose();
+        _gameEngine = new GameEngine.Renderer(Size.X, Size.Y);
     }
 }

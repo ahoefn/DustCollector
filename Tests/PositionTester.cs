@@ -7,6 +7,7 @@ sealed class PositionTester : Tester
 {
     public PositionTester(TestParams tP) : base(Paths.POSITIONUPDATERPATH)
     {
+        tP.N = 2;
         RunTest(TwoParticles, tP);
     }
 

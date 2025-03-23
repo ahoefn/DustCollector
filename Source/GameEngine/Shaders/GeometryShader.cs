@@ -1,5 +1,9 @@
 using OpenTK.Graphics.OpenGL4;
 namespace DustCollector.GameEngine.Shaders;
+
+/// <summary>
+/// Contains a vertex and fragment shader and deals with all of the rendering for the program.
+/// </summary>
 public class GeometryShader : Shader
 {
     public GeometryShader(string vertexPath, string fragmentPath, IBufferHandler bufferHandler)

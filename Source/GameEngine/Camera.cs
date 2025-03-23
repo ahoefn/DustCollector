@@ -1,13 +1,18 @@
 using OpenTK.Mathematics;
 using System.IO;
 namespace DustCollector.GameEngine;
-
+/// <summary>
+/// An enum with the different directions used to interface with the camera class.
+/// </summary>
 public enum Direction
 {
     up,
     front,
     right
 }
+/// <summary>
+/// ICamera interface, implemented by the Camera and GameEngine classes.
+/// </summary>
 interface ICamera
 {
     public void UpdateAspect(int width, int height);
@@ -15,6 +20,9 @@ interface ICamera
     public void ChangePosition(Direction dir, float amount);
 }
 
+/// <summary>
+/// This class contains the current position and direction the camera faces, and constructs the correct transformation and projection matrices from this data.
+/// </summary>
 public class Camera : ICamera
 {
     public Camera(int width, int height)

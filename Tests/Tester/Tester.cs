@@ -1,6 +1,9 @@
 using OpenTK.Graphics.OpenGL4;
 namespace DustCollector.Tests;
 
+/// <summary>
+/// General tester class containing the methods necessary for initializing and running tests.
+/// </summary>
 class Tester
 {
     public Tester(string path_in)

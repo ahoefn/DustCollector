@@ -1,6 +1,9 @@
 using OpenTK.Graphics.OpenGL4;
 namespace DustCollector.GameEngine;
 
+/// <summary>
+/// Interface for buffer, currently only implemented by the buffer class.
+/// </summary>
 public interface IBufferHandler : IDisposable
 {
     public void CreateVertexBuffer(Buffer buffer, float[] data, BufferUsageHint hint);
@@ -12,6 +15,9 @@ public interface IBufferHandler : IDisposable
     public void RemoveBuffer(Buffer buffer);
 }
 
+/// <summary>
+/// An enum that contains all the different buffers needed within this program.
+/// </summary>
 public enum Buffer
 {
     positionsCurrent,
@@ -23,7 +29,9 @@ public enum Buffer
     colors
 }
 
-// This class allows us to do all the OpenGL buffer/memory handling in one place.
+/// <summary>
+/// Handles all the graphic card memory management. 
+/// </summary>
 public class BufferHandler : IBufferHandler
 {
     public BufferHandler()

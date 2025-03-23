@@ -1,6 +1,8 @@
 namespace DustCollector;
 
-// Global settings that can freely be changed
+/// <summary>
+/// Global settings that can freely be changed. Will require a recompilation in order to apply.
+/// </summary>
 public static class Settings
 {
     // Size of the window opened, note that the window can be rescaled freely once opened as well.

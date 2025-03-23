@@ -1,6 +1,9 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 namespace DustCollector.Tests;
 
+/// <summary>
+/// Performs a simple test on the velocity compute shader. Creating an isntance of this class runs the test.
+/// </summary>
 sealed class VelocityTester : Tester
 {
     public VelocityTester(TestParams tP) : base(Paths.VELOCITYUPDATERPATH)

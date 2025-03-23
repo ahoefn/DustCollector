@@ -1,8 +1,9 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using DustCollector.GameEngine;
-using DustCollector.GameEngine.Shaders;
 namespace DustCollector.Tests;
 
+/// <summary>
+/// Performs a simple test on the position compute shader. Creating an isntance of this class runs the test.
+/// </summary>
 sealed class PositionTester : Tester
 {
     public PositionTester(TestParams tP) : base(Paths.POSITIONUPDATERPATH)

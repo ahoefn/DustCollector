@@ -1,6 +1,10 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 namespace DustCollector.GameEngine.Shaders;
+
+/// <summary>
+/// General shader class containing methods shared between the compute and geometryshader classes.
+/// </summary>
 public class Shader : IDisposable
 {
     public Shader(IBufferHandler bufferHandler_in)

@@ -4,6 +4,9 @@ using DustCollector.GameEngine;
 using DustCollector.GameEngine.Shaders;
 namespace DustCollector.Tests;
 
+/// <summary>
+/// Performs a simple test on the force compute shader. Creating an isntance of this class runs the test.
+/// </summary>
 sealed class ForceTester : Tester
 {
     public ForceTester(TestParams testParams) : base(Paths.FORCEUPDATERPATHNOCOLLISIONS)

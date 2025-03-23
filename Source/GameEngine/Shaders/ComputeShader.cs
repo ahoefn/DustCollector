@@ -1,6 +1,9 @@
 using OpenTK.Graphics.OpenGL4;
 namespace DustCollector.GameEngine.Shaders;
 
+/// <summary>
+/// Compute shader, deals with its construction and contains a variety of dispatch methods to perform the computations.
+/// </summary>
 public class ComputeShader : Shader
 {
     public ComputeShader(string computePath, IBufferHandler bufferHandler)

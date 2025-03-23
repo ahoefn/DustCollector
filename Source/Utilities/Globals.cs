@@ -1,6 +1,8 @@
 namespace DustCollector;
 
-//Global numbers:
+/// <summary>
+/// Global constants, currently only OpenGL related.
+/// </summary>
 public static class Globals
 {
     // The maximum workgroup size as specified by the OpenGL specs
@@ -13,7 +15,9 @@ public static class Globals
 
 }
 
-//Global paths:
+/// <summary>
+/// Contains the relative paths of all the shaders.
+/// </summary>
 public static class Paths
 {
     public const string VERTEXPATH = "GameEngine/Shaders/GLSL/Shader.vert";

@@ -2,7 +2,9 @@ using DustCollector.GameEngine.Shaders;
 using OpenTK.Graphics.OpenGL4;
 namespace DustCollector.GameEngine;
 
-
+/// <summary>
+/// Deals with the simulation part of the program, constructs a variety of ComputeShaders for this purpose.
+/// </summary>
 class ParticleModel : IDisposable
 {
     public ParticleModel(int particleCount_in, string positionPath, string velocityPath, string forcePath, IBufferHandler bufferHandler_in)
@@ -111,6 +113,10 @@ class ParticleModel : IDisposable
                     currentIndex = 3 * (i + dimensions * j + dimensions * dimensions * k);
                     // Uncomment/write below if a certain initial velocity is wanted.
                     // velocities[currentIndex] = 1.1f;
+
+                    // Gives the cube an angular momentum
+                    velocities[currentIndex] = (float)(k - dimensions / 2) / 3;
+                    velocities[currentIndex + 2] = (float)(i - dimensions / 2) / 3;
                 }
             }
         }

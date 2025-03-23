@@ -2,7 +2,9 @@ using System.Collections;
 
 namespace DustCollector.Tests;
 
-// Allows for comparison of floating points within a specified precision
+/// <summary>
+/// Contains a compare method that allows for comparing different floats with a set precision.
+/// </summary>
 class FloatComparer : IComparer
 {
     public FloatComparer(float precision_in)

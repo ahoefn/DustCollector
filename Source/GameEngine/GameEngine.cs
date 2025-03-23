@@ -2,10 +2,12 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 namespace DustCollector.GameEngine;
 
-
-public class Renderer : ICamera, IDisposable
+/// <summary>
+/// Class that handles the communication between the Game/GameWindow and the actual OpenGL shaders and buffers that deal with simulation and rendering. In particular, contains a GeometricShader and a particle model for these tasks.
+/// </summary>
+public class GameEngine : ICamera, IDisposable
 {
-    public Renderer(int width, int height)
+    public GameEngine(int width, int height)
     {
         //Global GL Settings, should not be changed anywhere else.
         GL.PointSize(Settings.POINTSIZE);

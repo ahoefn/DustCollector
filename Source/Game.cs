@@ -5,17 +5,24 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Diagnostics;
 namespace DustCollector;
+
+/// <summary>
+/// Manages the main window inputs and outputs, as well as the window rescaling.
+/// Inherits from GameWindow which is an OpenTK class that manages the OpenGL context.
+/// </summary>
 public class Game : GameWindow
 {
+    // Game without debugging enabled
     public Game(int width, int height, string title)
     : base(GameWindowSettings.Default, new NativeWindowSettings() { ClientSize = (width, height), Title = title })
     {
         _timer = new Stopwatch();
         _timer.Start();
-        _gameEngine = new GameEngine.Renderer(Size.X, Size.Y);
+        _gameEngine = new GameEngine.GameEngine(Size.X, Size.Y);
     }
 
-    // If Game is called with debug : true, enable OpenGL debugging:
+    // If Game is called with debug : true (or false actually), enable OpenGL debugging:
+    // TODO: don't debug on false?
     public Game(int width, int height, string title, bool debug)
    : base(GameWindowSettings.Default, new NativeWindowSettings()
    {
@@ -30,11 +37,11 @@ public class Game : GameWindow
 
         _timer = new Stopwatch();
         _timer.Start();
-        _gameEngine = new GameEngine.Renderer(Size.X, Size.Y);
+        _gameEngine = new GameEngine.GameEngine(Size.X, Size.Y);
     }
 
     // Properties:
-    private GameEngine.Renderer _gameEngine;
+    private GameEngine.GameEngine _gameEngine;
     private Stopwatch _timer;
     private bool _firstMouse = true;
     private Vector2 _prevMousePos;
@@ -56,11 +63,11 @@ public class Game : GameWindow
         float deltaTime = (float)args.Time;
         _gameEngine.Render(deltaTime);
 
-        //Update framerate:
+        // Update framerate:
         _avgFrameRate = (_avgFrameRate * _frameCount + deltaTime) / (_frameCount + 1);
         _frameCount += 1;
 
-        //Need to swap GLFW window buffers:
+        // Need to swap GLFW window buffers:
         SwapBuffers();
         GL.Clear(ClearBufferMask.ColorBufferBit);
     }
@@ -81,7 +88,7 @@ public class Game : GameWindow
 
         if (input.IsKeyDown(Keys.Escape)) { Close(); }
 
-        //Movement keys:
+        // Movement keys:
         if (input.IsKeyDown(Keys.W))
         {
             _gameEngine.ChangePosition(GameEngine.Direction.front, Settings.MOVSPEED * deltaTime);
@@ -107,7 +114,7 @@ public class Game : GameWindow
             _gameEngine.ChangePosition(GameEngine.Direction.up, Settings.MOVSPEED * deltaTime);
         }
 
-        //Start/stop simulation and show framerate:
+        // Start/stop simulation and show framerate:
         if (input.IsKeyPressed(Keys.Space))
         {
             if (_gameEngine.isSimulating)
@@ -119,7 +126,7 @@ public class Game : GameWindow
             _gameEngine.isSimulating = !_gameEngine.isSimulating;
         }
 
-        //Restart renderer on R:
+        // Restart renderer on R:
         if (input.IsKeyPressed(Keys.R))
         {
             RestartRenderer();
@@ -156,6 +163,6 @@ public class Game : GameWindow
     private void RestartRenderer()
     {
         _gameEngine.Dispose();
-        _gameEngine = new GameEngine.Renderer(Size.X, Size.Y);
+        _gameEngine = new GameEngine.GameEngine(Size.X, Size.Y);
     }
 }

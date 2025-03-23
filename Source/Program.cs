@@ -1,5 +1,8 @@
 ﻿namespace DustCollector;
 
+/// <summary>
+/// Entry point of the program, creates a Game instance and runs it.
+/// </summary>
 class Program
 {
     static void Main(string[] args)

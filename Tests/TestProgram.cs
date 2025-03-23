@@ -6,22 +6,9 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Desktop;
 namespace DustCollector.Tests;
 
-//Input struct for test functions:
-public class TestParams
-{
-    public TestParams(GameWindow window_in, int program_in)
-    {
-        window = window_in;
-        program = program_in;
-    }
-    public readonly GameWindow window;
-    public GameEngine.BufferHandler? bufferHandler;
-    public GameEngine.Shaders.ComputeShader? shader;
-    public readonly int program;
-    public int? N;
-}
-
-//Main program:
+/// <summary>
+/// Entry point for the test program, creates a the classes in the "Tester" folder which run the tests.
+/// </summary>
 class TestProgram
 {
     private static void Main(string[] args)

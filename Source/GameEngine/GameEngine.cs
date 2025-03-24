@@ -22,7 +22,7 @@ public class GameEngine : ICamera, IDisposable
         int particleCount = Settings.CUBESIZE * Settings.CUBESIZE * Settings.CUBESIZE;
 
         // Check if we want the physics engine with or without collission force:
-        if (Settings.COLLISSIONS)
+        if (Settings.COLLISIONS)
         {
             _model = new ParticleModel(particleCount, Paths.POSITIONUPDATERPATH, Paths.VELOCITYUPDATERPATH,
                                         Paths.FORCEUPDATERPATHWCOLLISIONS, _bufferHandler);

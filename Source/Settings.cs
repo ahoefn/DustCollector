@@ -24,8 +24,8 @@ public static class Settings
     public const float GRAVITYSTRENGTH = 0.07f;
 
     // Enable or disable a repulsive force between the particles
-    public const bool COLLISSIONS = true;
-    public const float COLLISSIONSTRENGTH = 0.5f * GRAVITYSTRENGTH;
+    public const bool COLLISIONS = true;
+    public const float COLLISIONSTRENGTH = 0.5f * GRAVITYSTRENGTH;
 
     // Enable OpenGL debugging
     public const bool OPENGLDEBUGGING = false;

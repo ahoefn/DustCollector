@@ -58,9 +58,9 @@ class ParticleModel : IDisposable
         // Force shader uniforms:
         _forceUpdater.SetInt("particleCount", particleCount);
         _forceUpdater.SetFloat("gravityStrength", Settings.GRAVITYSTRENGTH);
-        if (Settings.COLLISSIONS)
+        if (Settings.COLLISIONS)
         {
-            _forceUpdater.SetFloat("colissionsStrength", Settings.COLLISSIONSTRENGTH);
+            _forceUpdater.SetFloat("colissionsStrength", Settings.COLLISIONSTRENGTH);
         }
 
     }

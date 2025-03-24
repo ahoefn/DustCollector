@@ -17,12 +17,7 @@ The program itself can be run by using the command
 
     dotnet run
     
-while in the "source" folder. Otherwise, one can use
-
-    dotnet build -c Release
-    dotnet run -c Release
-    
-while in the "source" folder. Similarly, the tests can be run and compiled using the same commands while in the "Tests" folder.
+while in the "source" folder. Similarly, the tests can be run and compiled using the same command while in the "Tests" folder.
 
 ### Code structure.
 

@@ -16,14 +16,15 @@ public static class Globals
 }
 
 /// <summary>
-/// Contains the relative paths of all the shaders.
+/// Contains the paths for the different shaders, includes the global path.
 /// </summary>
 public static class Paths
 {
-    public const string VERTEXPATH = "Shaders/Shader.vert";
-    public const string FRAGMENTPATH = "Shaders/Shader.frag";
-    public const string POSITIONUPDATERPATH = "Shaders/PositionUpdater.comp";
-    public const string VELOCITYUPDATERPATH = "Shaders/VelocityUpdater.comp";
-    public const string FORCEUPDATERPATHWCOLLISIONS = "Shaders/ForceUpdaterWCollisions.comp";
-    public const string FORCEUPDATERPATHNOCOLLISIONS = "Shaders/ForceUpdaterNoCollisions.comp";
+    private static readonly string _GLOBALPATH = AppContext.BaseDirectory;
+    public static string VERTEXPATH { get => _GLOBALPATH + "Shaders/Shader.vert"; }
+    public static string FRAGMENTPATH { get => _GLOBALPATH + "Shaders/Shader.frag"; }
+    public static string POSITIONUPDATERPATH { get => _GLOBALPATH + "Shaders/PositionUpdater.comp"; }
+    public static string VELOCITYUPDATERPATH { get => _GLOBALPATH + "Shaders/VelocityUpdater.comp"; }
+    public static string FORCEUPDATERPATHWCOLLISIONS { get => _GLOBALPATH + "Shaders/ForceUpdaterWCollisions.comp"; }
+    public static string FORCEUPDATERPATHNOCOLLISIONS { get => _GLOBALPATH + "Shaders/ForceUpdaterNoCollisions.comp"; }
 }

@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Source\DustCollector.csproj" />
-    <None Update="C:\Users\hoefn\Code Projects\DustCollector\Source\Shaders\**" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="C:\Users\hoefn\Code Projects\DustCollector\Source\Shaders\GLSL\**" CopyToOutputDirectory="PreserveNewest" />
     <PackageReference Include="MSTest" Version="3.8.2" />
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>

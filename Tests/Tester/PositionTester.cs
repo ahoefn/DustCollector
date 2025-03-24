@@ -2,7 +2,7 @@
 namespace DustCollector.Tests;
 
 /// <summary>
-/// Performs a simple test on the position compute shader. Creating an isntance of this class runs the test.
+/// Performs a simple test on the position compute shader. Creating an instance of this class runs the test.
 /// </summary>
 sealed class PositionTester : Tester
 {

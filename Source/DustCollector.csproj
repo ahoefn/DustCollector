@@ -10,7 +10,6 @@
   <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.9.3" />
     <ShaderFiles Include = "GameEngine\Shaders\GLSL\**"/>
-    <!-- <None Update="C:\Users\hoefn\Code Projects\DustCollector\Source\GameEngine\Shaders\GSLS\**" CopyToOutputDirectory="PreserveNewest"/> -->
   </ItemGroup>
 
   <Target Name="CopyShadersAfterBuild" AfterTargets="AfterBuild">

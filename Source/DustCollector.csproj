@@ -9,6 +9,13 @@
 
   <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.9.3" />
-    <None Update="C:\Users\hoefn\Code Projects\DustCollector\Source\GameEngine\Shaders\GSLS\**" CopyToOutputDirectory="PreserveNewest"/>
+    <ShaderFiles Include = "GameEngine\Shaders\GLSL\**"/>
+    <!-- <None Update="C:\Users\hoefn\Code Projects\DustCollector\Source\GameEngine\Shaders\GSLS\**" CopyToOutputDirectory="PreserveNewest"/> -->
   </ItemGroup>
-</Project>
+
+  <Target Name="CopyShadersAfterBuild" AfterTargets="AfterBuild">
+    <Copy SourceFiles="@(ShaderFiles)" DestinationFolder="$(OutDir)\Shaders"/>
+  </Target>
+  <Target Name="CopyShadersAfterPublish" AfterTargets="Publish">
+    <Copy SourceFiles="@(ShaderFiles)" DestinationFolder="$(PublishDir)\Shaders"/>
+  </Target></Project>

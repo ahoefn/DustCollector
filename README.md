@@ -1,6 +1,6 @@
 # DustCollector
 
-In this repo is a simple particle simulator I have built / am building. Once opened a cube of particles is generated and one can freely fly around these particles and start/stop the simulation. The controls are as follows:
+In this repo is a simple particle simulator I have built / am building. After setup, all of the simulation and rendering is done on the GPU using OpenTK. Once opened a cube of particles is generated and one can freely fly around these particles and start/stop the simulation. The controls are as follows:
    
  * WASD for planar motion,
  * SHIFT/CTRL for up down motion,
